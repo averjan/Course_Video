@@ -1,0 +1,6 @@
+{
+  "port": "4000",
+  "secure": true,
+  "secure_key" : "./ssl_certificate.key",
+  "secure_cert" : "./ssl_certificate.crt"
+}
