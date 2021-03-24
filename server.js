@@ -36,6 +36,7 @@ app.use(express.static('public'))
 app.get('/' , (req,res)=>{
     res.send(uuidv4());
 });
+
 app.get('/:room' , (req,res)=>{
     console.log("swag room");
     console.log(req.params.room)
@@ -46,6 +47,7 @@ app.get('/:room' , (req,res)=>{
 
 io.on("connection" , socket => {
     console.log("swage")
+
     socket.on('newUser' , (id , room)=>{
         socket.join(room);
         console.log("swag2")
@@ -57,6 +59,10 @@ io.on("connection" , socket => {
             //socket.to(room).emit('userDisconnect' , id);
             socket.broadcast.to(room).emit('userDisconnect' , id);
         })
+    })
+
+    socket.on('chat message', (msg) =>{
+        io.emit('chat message', msg)
     })
 })
 server.listen(port , ()=>{
