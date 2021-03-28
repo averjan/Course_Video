@@ -7,7 +7,7 @@ var input = document.getElementById("input")
 form.addEventListener('submit', function (e) {
     e.preventDefault()
     if (input.value) {
-        socket.emit('chat message', input.value)
+        socket.emit('chat message', input.value, roomID)
         input.value = ''
     }
 })
