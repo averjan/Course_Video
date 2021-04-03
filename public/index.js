@@ -9,6 +9,9 @@ let myvideo = document.createElement('video');
 myvideo.muted = true;
 const peerConnections = {}
 
+let videoTracks;
+let audioTracks;
+
 ioClient = socket.connect('http://localhost:4000')
 ioClient.on('connect', socket => {
     ioClient.send('room')
@@ -19,6 +22,8 @@ navigator.mediaDevices.getUserMedia({
     audio:true
 }).then((stream)=>{
     myVideoStream = stream;
+    videoTracks = stream.getVideoTracks();
+    audioTracks = stream.getAudioTracks();
     addVideo(myvideo , stream);
     peer.on('call' , call=>{
         call.answer(stream);
@@ -45,7 +50,6 @@ peer.on('error' , (err)=>{
 });
 socket.on('userJoined' , id=>{
     alert("new")
-    console.log("new user joined")
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
@@ -72,3 +76,39 @@ function addVideo(video , stream){
     })
     videoGrid.append(video);
 }
+
+// Stream control
+document.getElementById("video-stream-control").onclick = function(event){
+    if (videoTracks[0].enabled) {
+        videoTracks[0].enabled = false
+        socket.emit("DisableVideo", myId, roomID)
+    }
+    else {
+        videoTracks[0].enabled = true
+        socket.emit("EnableVideo", myId, roomID)
+    }
+}
+
+document.getElementById("audio-stream-control").onclick = function(event){
+    if (audioTracks[0].enabled) {
+        audioTracks[0].enabled = false
+        socket.emit("DisableAudio", myId, roomID)
+    }
+    else {
+        audioTracks[0].enabled = true
+        socket.emit("EnableAudio", myId, roomID)
+    }
+}
+
+socket.on('userDisableAudio', function(id) {
+    alert("disable");
+})
+socket.on('userEnableAudio', function(id) {
+
+})
+socket.on('userDisableVideo', function(id) {
+
+})
+socket.on('userEnableVideo', function(id) {
+
+})

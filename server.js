@@ -64,6 +64,19 @@ io.on("connection" , socket => {
     socket.on('chat message', (msg, room) =>{
         io.to(room).emit('chat message', msg)
     })
+
+    socket.on("DisableAudio", (id, room) =>{
+        io.to(room).emit('userDisableAudio', id)
+    })
+    socket.on("EnableAudio", (id, room) =>{
+        io.to(room).emit('userEnableAudio', id)
+    })
+    socket.on("DisableVideo", (id, room) =>{
+        io.to(room).emit('userDisableVideo', id)
+    })
+    socket.on("EnableVideo", (id, room) =>{
+        io.to(room).emit('userEnableAudio', id)
+    })
 })
 server.listen(port , ()=>{
     console.log("Server running on port : " + port);
