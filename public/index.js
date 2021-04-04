@@ -1,4 +1,5 @@
-const socket = io('http://localhost:4000');
+// const socket = io('http://localhost:4000');
+const socket = io('http://192.168.100.5:4000');
 const peer = new Peer();
 
 let roomID = "room"
@@ -12,7 +13,8 @@ const peerConnections = {}
 let videoTracks;
 let audioTracks;
 
-ioClient = socket.connect('http://localhost:4000')
+// ioClient = socket.connect('http://localhost:4000')
+ioClient = socket.connect('http://192.168.100.5:4000')
 ioClient.on('connect', socket => {
     ioClient.send('room')
 })

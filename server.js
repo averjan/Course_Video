@@ -62,7 +62,7 @@ io.on("connection" , socket => {
     })
 
     socket.on('chat message', (msg, room) =>{
-        io.to(room).emit('chat message', msg)
+        socket.to(room).emit('chat message', msg)
     })
 
     socket.on("DisableAudio", (id, room) =>{
