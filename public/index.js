@@ -11,7 +11,8 @@ let myvideo = document.createElement('video');
 let screen_video = document.createElement('video');
 myvideo.muted = true;
 const peerConnections = {}
-let capturedScreen;
+let capturedStream;
+let capturingScreen = false
 
 let videoTracks;
 let audioTracks;
@@ -31,14 +32,21 @@ navigator.mediaDevices.getUserMedia({
     audioTracks = stream.getAudioTracks();
     addVideo(myvideo , stream);
     peer.on('call' , call=>{
-        call.answer(myVideoStream);
-        const vid = document.createElement('video');
-        call.on('stream' , userStream=>{
-            addVideo(vid , userStream);
-        })
-        call.on('error' , (err)=>{
-            alert(err)
-        })
+        //  || (peerConnections.indexOf(call) > -1)
+        // alert(capturingScreen)
+        if ((!capturingScreen)) {
+            call.answer(myVideoStream);
+            const vid = document.createElement('video');
+            call.on('stream', userStream => {
+                addVideo(vid, userStream);
+            })
+            call.on('error', (err) => {
+                alert(err)
+            })
+        }
+        else {
+            call.answer(capturedStream)
+        }
     })
 }).catch(err=>{
     alert("two")
@@ -56,6 +64,10 @@ peer.on('error' , (err)=>{
 socket.on('userJoined' , id=>{
     alert("new")
     const call  = peer.call(id , myVideoStream);
+    if (capturingScreen){
+        peer.call(id, capturedStream)
+    }
+
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
         alert(err);
@@ -77,14 +89,18 @@ socket.on('userDisconnect' , id=>{
 })
 
 socket.on('screenCaptured' , id=>{
-    alert("new")
+    alert("caputred")
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
+    let i = 0
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        addVideo(vid , userStream.getTracks()[1]);
+        let otherScreen = new MediaStream([userStream.getTracks()[0]])
+        // alert(userStream.getTracks().length)
+        addVideo(vid, userStream);
+        i++
     })
     call.on('close' , ()=>{
         vid.remove();

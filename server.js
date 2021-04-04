@@ -7,6 +7,8 @@ let port = process.env.PORT || 4000,
 secure = config.secure || false;
 
 let server = require('http').createServer(app);
+
+let mainScreenUser = -1
 /*
 if (secure)
 {
@@ -53,6 +55,8 @@ io.on("connection" , socket => {
         console.log("swag2")
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
+        console.log("captured screen")
+
         //socket.to(room).broadcast.emit('userJoined' , id);
         socket.on('disconnect' , ()=>{
             //socket.to(room).broadcast.emit('userDisconnect' , id);
@@ -61,12 +65,21 @@ io.on("connection" , socket => {
         })
     })
 
-    socket.on("screen", (id, room)=>{
+
+    socket.on("screenCaptured", (id, room)=>{
+        mainScreenUser = id
         socket.broadcast.to(room).emit('screenCaptured' , id);
     })
 
+    socket.on("getScreen", id=>{
+        if (mainScreenUser !== -1) {
+            console.log("hi bih")
+            io.to(socket.id).emit('screenCaptured', mainScreenUser);
+        }
+    })
+
     socket.on('chat message', (msg, room) =>{
-        socket.to(room).emit('chat message', msg)
+        io.to(room).emit('chat message', msg)
     })
 
     socket.on("DisableAudio", (id, room) =>{

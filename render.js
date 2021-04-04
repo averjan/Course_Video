@@ -70,16 +70,20 @@ async function selectSource(source) {
     const stream = await navigator.mediaDevices
         .getUserMedia(constraints);
 
-    alert("sdf")
-    addVideo(videoElement, stream)
-    myVideoStream.addTrack(stream.getVideoTracks()[0])
+    alert(myVideoStream.getVideoTracks().length)
+    //myVideoStream.addTrack(stream.getTracks()[0])
+    capturedStream = stream
+    //let ms = new MediaStream([myVideoStream.getTracks()[2]])
+    addVideo(videoElement, capturedStream)
+
+    capturingScreen = true
     /*
     peerCapture.on("call", call=> {
         call.answer(stream)
     })
     */
 
-    socket.emit("screen", myId, roomID)
+    socket.emit("screenCaptured", myId, roomID)
     // Preview the source in a video element
     //videoElement.srcObject = stream;
     //await videoElement.play();
