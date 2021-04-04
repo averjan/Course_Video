@@ -61,6 +61,10 @@ io.on("connection" , socket => {
         })
     })
 
+    socket.on("screen", (id, room)=>{
+        socket.broadcast.to(room).emit('screenCaptured' , id);
+    })
+
     socket.on('chat message', (msg, room) =>{
         socket.to(room).emit('chat message', msg)
     })
