@@ -1,0 +1,150 @@
+html, body {
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    display: flex;
+}
+#user-list {
+
+}
+
+#videoDiv {
+    display: grid;
+    grid-gap: 10px;
+    height: 80%;
+    position: relative;
+    grid-template-columns: repeat(auto-fill, 300px);
+    grid-auto-rows: 300px;
+}
+
+#footer {
+    width: 100%;
+    height: 50px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    border-bottom: 1px solid grey;
+    margin-top: 10px;
+}
+
+button {
+    height: 30px;
+    width: 80px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    background-color: red;
+    cursor: pointer;
+}
+
+#videoDiv video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+#chat-panel {
+    display: none;
+    right: 0;
+    width: 300px;
+    background-color: grey;
+    /*position: absolute;*/
+    height: 100%;
+    flex-direction: column;
+}
+
+#call-window {
+    display: flex;
+    width: 100%;
+    /*width: auto;*/
+    height: 100%;
+    /*justify-content: right;*/
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#control-panel{
+    display: block;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    position: absolute;
+    bottom: 20px;
+}
+
+#control-buttons{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+#control-panel button{
+    margin: 0 10px;
+}
+
+#vid-panel{
+    width: 100%;
+    height: 300px;
+    bottom: 0px;
+}
+
+#work-block{
+    float: right;
+    right: 0;
+    display: flex;
+    position: relative;
+}
+
+#chat-btn{
+    position: absolute;
+    left: -80px;
+}
+
+#vid-main-block {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+#vid-pad{
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    object-fit: cover;
+}
+
+#vid-main{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+#form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; /*position: fixed;*/ width: 100%; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+#input:focus { outline: none; }
+#form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+#messages { list-style-type: none; margin: 0; padding: 0; flex-grow: 1; }
+#messages > li { padding: 0.5rem 1rem; }
+#messages > li:nth-child(odd) { background: #efefef; }
+

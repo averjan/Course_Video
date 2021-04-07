@@ -7,76 +7,9 @@
     <!--
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     -->
-    <style media="screen">
-        * {
-            margin: 0;
-        }
-
-        #videoDiv {
-            display: grid;
-            grid-gap: 10px;
-            height: 80%;
-            position: relative;
-            grid-template-columns: repeat(auto-fill, 300px);
-            grid-auto-rows: 300px;
-        }
-
-        #footer {
-            width: 100%;
-            height: 50px;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            flex: 1;
-            border-bottom: 1px solid grey;
-            margin-top: 10px;
-        }
-
-        button {
-            height: 30px;
-            width: 80px;
-            margin-top: 10px;
-            text-align: center;
-            border-radius: 10px;
-            outline: none;
-            border: none;
-            text-decoration: none;
-            background-color: red;
-            cursor: pointer;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 2px solid white;
-        }
-
-        #chat-panel {
-            right: 0;
-            width: 300px;
-            background-color: grey;
-            position: absolute;
-            height: 100%;
-        }
-
-        #call-window {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            justify-content: right;
-        }
-
-        #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-        #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-        #input:focus { outline: none; }
-        #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages > li { padding: 0.5rem 1rem; }
-        #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
-
+    <style media="screen"></style>
+    <link rel="stylesheet" type="text/css" href="../css/index.css">
+    <script rel="script" type="text/javascript" src="../js/index.js"></script>
     <!--
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js" defer>
     </script>
@@ -87,23 +20,18 @@
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js">
     </script>
 
-<!--
-    <script src="http://localhost:4000/socket.io/socket.io.js" defer>
-    </script>
 
-    <script src="http://localhost:4000/index.js" charset="utf-8" defer>
-    </script>
+    <script src="http://localhost:4000/socket.io/socket.io.js" defer></script>
 
-    <script src="http://localhost:4000/chat.js" charset="utf-8" defer>
-    </script>
--->
+    <script src="http://localhost:4000/index.js" charset="utf-8" defer></script>
 
-
+    <!--
     <script src="http://192.168.100.5:4000/socket.io/socket.io.js" defer>
     </script>
 
     <script src="http://192.168.100.5:4000/index.js" charset="utf-8" defer>
     </script>
+    -->
 
     <script src="../public/chat.js" charset="utf-8" defer>
     </script>
@@ -113,8 +41,49 @@
 </head>
 <body style="background: white;">
 <div id="call-window">
-    <div id="videoDiv"></div>
 
+    <div id="vid-main-block">
+        <div id="vid-pad">
+            <video id="vid-main"></video>
+        </div>
+
+        <div id="control-panel">
+            <div id="control-buttons">
+                <button id="video-stream-control">
+                    Video
+                </button>
+
+                <button id="audio-stream-control">
+                    Audio
+                </button>
+
+                <button id="screen-stream">
+                    start
+                </button>
+
+                <button id="screen-select">
+                    Screen
+                </button>
+
+                <button id="screen-cancel-select">
+                    Screen
+                </button>
+
+                <button id="screen-stop">
+                    stop
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="vid-panel">
+        <div id="videoDiv"></div>
+    </div>
+</div>
+
+<div id="work-block">
+    <button id="chat-btn" type="button" onclick="openForm()"><</button>
     <div id="chat-panel">
         <ul id="messages"></ul>
 
@@ -122,28 +91,6 @@
             <input id="input" autocomplete="off" /><button>Send</button>
         </form>
     </div>
-
-    <div>
-        <button id="video-stream-control">
-        Video
-        </button>
-        <button id="audio-stream-control">
-            Audio
-        </button>
-    </div>
-
-    <div>
-        <button id="screen-stream">
-        start
-        </button>
-        <button id="screen-select">
-            Screen
-        </button>
-        <button id="screen-stop">
-            stop
-        </button>
-    </div>
-
 </div>
 
 </body>

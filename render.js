@@ -31,6 +31,9 @@ stopBtn.onclick = e => {
 
 const videoSelectBtn = document.getElementById('screen-select');
 videoSelectBtn.onclick = getVideoSources;
+const videoCancelShareBtn = document.getElementById('screen-cancel-select');
+videoCancelShareBtn.hidden = true;
+videoCancelShareBtn.onclick = cancelVideoSources
 
 // Get the available video sources
 async function getVideoSources() {
@@ -46,7 +49,6 @@ async function getVideoSources() {
             };
         })
     );
-
 
     videoOptionsMenu.popup();
 }
@@ -74,7 +76,12 @@ async function selectSource(source) {
     //myVideoStream.addTrack(stream.getTracks()[0])
     capturedStream = stream
     //let ms = new MediaStream([myVideoStream.getTracks()[2]])
-    addVideo(videoElement, capturedStream)
+    let mainVideo = document.getElementById("vid-main")
+    mainVideo.srcObject = stream;
+    mainVideo.addEventListener('loadedmetadata', () => {
+        mainVideo.play()
+    })
+    //addVideo(mainVideo, capturedStream)
 
     capturingScreen = true
     /*
@@ -84,6 +91,8 @@ async function selectSource(source) {
     */
 
     socket.emit("screenCaptured", myId, roomID)
+    videoSelectBtn.hidden = true
+    videoCancelShareBtn.hidden = false
     // Preview the source in a video element
     //videoElement.srcObject = stream;
     //await videoElement.play();
@@ -98,6 +107,15 @@ async function selectSource(source) {
     mediaRecorder.onstop = handleStop;
     */
     // Updates the UI
+}
+
+function cancelVideoSources()
+{
+    capturingScreen = false
+    videoCancelShareBtn.hidden = true
+    videoSelectBtn.hidden = false
+    capturedStream.getTracks()[0].stop()
+    // document.getElementById("screen-share").remove()
 }
 
 // Captures all recorded chunks
