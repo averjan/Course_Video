@@ -119,6 +119,7 @@ button {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
 }
 
 #vid-pad{
@@ -133,9 +134,11 @@ button {
 }
 
 #vid-main{
-    width: 100%;
+    /*width: 100%;*/
+    overflow: hidden;
     height: 100%;
-    object-fit: cover;
+    /*object-fit: cover;*/
+    object-fit: contain;
     border: 2px solid white;
 }
 
