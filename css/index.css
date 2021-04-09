@@ -83,6 +83,11 @@ button {
     z-index: 1;
     position: absolute;
     bottom: 20px;
+    opacity: 0;
+}
+
+#control-panel:hover{
+    opacity: 1;
 }
 
 #control-buttons{

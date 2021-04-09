@@ -82,6 +82,10 @@ io.on("connection" , socket => {
         io.to(room).emit('chat message', msg)
     })
 
+    socket.on('client-send-file-slice', (slice, room) =>{
+        storeFileSlice(socket, user, data, room);
+    })
+
     socket.on("DisableAudio", (id, room) =>{
         io.to(room).emit('userDisableAudio', id)
     })
@@ -95,6 +99,43 @@ io.on("connection" , socket => {
         io.to(room).emit('userEnableAudio', id)
     })
 })
+
+function storeFileSlice(socket, user, data, room) {
+    this.storage.storeFileSlice(data);
+    let complete = this.storage.fileIsComplete(data.name);
+    if(complete) {
+        console.log("FILE COMPLETE!");
+        let res = this.storage.finalizeFile(data.name);
+        if(!res.err) {
+            socket.emit('SERVER_FINISH_RECEIVE_FILE');
+            socket.broadcast.to(room).emit('CHAT_FILE', {
+                user: user.name,
+                file: {
+                    name: res.alias,
+                    size: res.size,
+                    path: '/files/' + res.name,
+                    ext: res.name.split('.').pop().toUpperCase(),
+                },
+                time: utils.getSimpleTime(),
+                color: user.color,
+            });
+            this.broadcastServerLog({
+                type: events.SERVER_FILE,
+                user: user.name,
+                message: res.alias,
+                room: room,
+            })
+        } else {
+            socket.emit('SERVER_ERROR_RECEIVE_FILE', res.err);
+        }
+    } else {
+        console.log("REQUEST FILE SLICE!");
+        socket.emit('SERVER_REQUEST_FILE_SLICE', {
+            currentSlice: this.storage.getCurrentFileSlice(data.name)
+        });
+    }
+}
+
 server.listen(port , ()=>{
     console.log("Server running on port : " + port);
 })

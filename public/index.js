@@ -207,3 +207,11 @@ socket.on('userDisableVideo', function(id) {
 socket.on('userEnableVideo', function(id) {
 
 })
+
+const uploadFileSlice = (slice) => {
+    socket.emit("client-send-file-slice", slice)
+}
+
+socket.on("request-file-slice", function (slice) {
+    sendRequestedFileSlice(slice)
+})
