@@ -1,5 +1,6 @@
 ////// File sharing
 //const md5 = require("uuid/dist/esm-browser/md5");
+const md5 = require('../node_modules/md5/md5.js')
 
 const shareFile = (file) => {
     if (file){

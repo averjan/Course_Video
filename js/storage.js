@@ -1,4 +1,5 @@
-import fs from 'fs';
+// import fs from 'fs';
+const fs = require('fs');
 
 let Storage = function () {
     var users = {};
@@ -143,17 +144,19 @@ let Storage = function () {
     }
 
     this.finalizeFile = (name) => {
+        console.log(__dirname)
         var fileBuffer = Buffer.concat(files[name].data);
         let ext = files[name].alias.split('.').pop();
         let finalName = `${files[name].name}.${ext}`
-        let path = __dirname + `/../../upload/${finalName}`;
+        let path = __dirname + `\\upload\\${finalName}`;
+        console.log(path);
         let res = {
             alias: files[name].alias,
             size: files[name].size,
             name: finalName
         };
         // console.log(path);
-        fs.writeFile(path, fileBuffer, (err) => {
+        fs.writeFile(path, fileBuffer, {flag: 'w'}, (err) => {
             delete files[name];
             if (err) {
                 res['err'] = err;
@@ -163,4 +166,5 @@ let Storage = function () {
     }
 }
 
-export default Storage;
+//export default Storage;
+module.exports = Storage

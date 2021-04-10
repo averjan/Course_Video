@@ -1,3 +1,8 @@
+//import Storage from "./js/storage";
+const Storage = require('./js/storage.js')
+const utils = require('./utils.js')
+
+
 const fs = require('fs');
 const express = require('express');
 const app = express();
@@ -25,6 +30,8 @@ else
 }
 */
 
+// const md5 = require("md5");
+const storage = new Storage()
 const io = require("socket.io")(server);
 const {v4:uuidv4} = require('uuid');
 const {ExpressPeerServer} = require('peer')
@@ -82,9 +89,9 @@ io.on("connection" , socket => {
         io.to(room).emit('chat message', msg)
     })
 
-    socket.on('client-send-file-slice', (slice, room) =>{
+    socket.on('client-send-file-slice', (id, slice, room) =>{
         console.log("start file")
-        storeFileSlice(socket, user, slice, room);
+        storeFileSlice(socket, id, slice, room);
     })
 
     socket.on("DisableAudio", (id, room) =>{
@@ -102,11 +109,11 @@ io.on("connection" , socket => {
 })
 
 function storeFileSlice(socket, user, data, room) {
-    this.storage.storeFileSlice(data);
-    let complete = this.storage.fileIsComplete(data.name);
+    storage.storeFileSlice(data);
+    let complete = storage.fileIsComplete(data.name);
     if(complete) {
         console.log("FILE COMPLETE!");
-        let res = this.storage.finalizeFile(data.name);
+        let res = storage.finalizeFile(data.name);
         if(!res.err) {
             socket.emit('SERVER_FINISH_RECEIVE_FILE');
             socket.broadcast.to(room).emit('CHAT_FILE', {
@@ -120,19 +127,21 @@ function storeFileSlice(socket, user, data, room) {
                 time: utils.getSimpleTime(),
                 color: user.color,
             });
+            /*
             this.broadcastServerLog({
                 type: events.SERVER_FILE,
                 user: user.name,
                 message: res.alias,
                 room: room,
             })
+             */
         } else {
             socket.emit('SERVER_ERROR_RECEIVE_FILE', res.err);
         }
     } else {
         console.log("REQUEST FILE SLICE!");
         socket.emit('SERVER_REQUEST_FILE_SLICE', {
-            currentSlice: this.storage.getCurrentFileSlice(data.name)
+            currentSlice: storage.getCurrentFileSlice(data.name)
         });
     }
 }
