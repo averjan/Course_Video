@@ -1,6 +1,6 @@
-const socket = io('http://localhost:4000');
+//const socket = io('http://localhost:4000');
 // const desktopCapturer = require('electron')
-// const socket = io('http://192.168.100.5:4000');
+const socket = io('http://192.168.100.7:4000');
 const peer = new Peer();
 
 let roomID = "room"
@@ -215,7 +215,8 @@ socket.on('userEnableVideo', function(id) {
 })
 
 const uploadFileSlice = (slice) => {
-    socket.emit("client-send-file-slice", slice)
+    alert("swag")
+    socket.emit("client-send-file-slice", slice, roomID)
 }
 
 socket.on("request-file-slice", function (slice) {

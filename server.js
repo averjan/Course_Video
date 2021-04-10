@@ -83,7 +83,8 @@ io.on("connection" , socket => {
     })
 
     socket.on('client-send-file-slice', (slice, room) =>{
-        storeFileSlice(socket, user, data, room);
+        console.log("start file")
+        storeFileSlice(socket, user, slice, room);
     })
 
     socket.on("DisableAudio", (id, room) =>{

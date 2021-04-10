@@ -1,6 +1,9 @@
 ////// File sharing
+//const md5 = require("uuid/dist/esm-browser/md5");
+
 const shareFile = (file) => {
     if (file){
+        alert("shareFile")
         uploading = true
         fileReader = new FileReader()
         let slice = file.slice(0, 100000)
@@ -12,6 +15,7 @@ const shareFile = (file) => {
 }
 
 const sendFileSlice = (progress, slice) => {
+    alert("sendFileSlice")
     fileReader.readAsArrayBuffer(slice);
     fileReader.onload = (evt) => {
         let arrayBuffer = fileReader.result;

@@ -9,6 +9,6 @@ document.getElementById("select-file-input").addEventListener('change', (event) 
 
 document.getElementById("send-btn").addEventListener('click', (event) =>{
     document.getElementById("select-file-input").value = '';
-    shareFile()
+    shareFile(file)
 })
 
