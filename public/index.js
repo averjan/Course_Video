@@ -97,10 +97,9 @@ socket.on('screenCaptured' , id=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        let otherScreen = new MediaStream([userStream.getTracks()[0]])
         // alert(userStream.getTracks().length)
-        addVideo(vid, userStream);
-        i++
+        // addVideo(vid, userStream);
+        setMainVid(userStream)
     })
     call.on('close' , ()=>{
         vid.remove();
@@ -117,6 +116,13 @@ function addVideo(video , stream){
     videoGrid.append(video);
 }
 
+function setMainVid(stream){
+    let mainVideo = document.getElementById("vid-main")
+    mainVideo.srcObject = stream;
+    mainVideo.addEventListener('loadedmetadata', () => {
+        mainVideo.play()
+    })
+}
 // Capture screen
 
 document.getElementById("screen-stream").onclick = function(event){
