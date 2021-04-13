@@ -27,7 +27,8 @@ function appendFileToChat(file) {
 
     let item = document.createElement('li')
     let fileReference = document.createElement('a')
-    fileReference.appendChild(document.createTextNode(file.file.name))
+    //fileReference.appendChild(document.createTextNode(file.file.name))
+    fileReference.textContent = file.file.name
     fileReference.id = fileContainerID
     fileReference.addEventListener('click', (e) => {
         e.preventDefault()

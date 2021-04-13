@@ -240,9 +240,9 @@ let callToDownload
 
 $(function() {
     callToDownload = function (file, id) {
-        let fileName = file.name
+        let fileName = file.textContent
         let path = filePathMap[id]
-        alert(path)
+        alert(fileName)
         $.ajax({
             type: 'GET',
             url: mainUrl + path,
