@@ -7,6 +7,8 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const config = require('./config')
+const mmm = require('mmmagic')
+var Magic = require('mmmagic').Magic;
 
 let port = process.env.PORT || 4000,
 secure = config.secure || false;
@@ -53,6 +55,24 @@ app.get('/:room' , (req,res)=>{
     //res.render('index' , {RoomId:req.params.room});
     res.render('index' , {RoomId : req.params.room});
 });
+
+app.get('/files/:fileName', function (req, res, next) {
+    console.log("download file")
+    let fileName = req.params.fileName;
+    let path = __dirname + `/js/upload/${fileName}`;
+    let magic = new Magic(mmm.MAGIC_MIME_TYPE);
+    magic.detectFile(path, (err, type) => {
+        if (err) throw err;
+        fs.readFile(path, (err, data) => {
+            if (err) throw err;
+            res.json({
+                type: type,
+                data: data,
+            });
+        });
+    });
+
+})
 
 io.on("connection" , socket => {
     console.log("swage")
@@ -116,7 +136,8 @@ function storeFileSlice(socket, user, data, room) {
         let res = storage.finalizeFile(data.name);
         if(!res.err) {
             socket.emit('SERVER_FINISH_RECEIVE_FILE');
-            socket.broadcast.to(room).emit('CHAT_FILE', {
+            //socket.broadcast.to(room).emit('CHAT_FILE', {
+            io.to(room).emit('CHAT_FILE', {
                 user: user.name,
                 file: {
                     name: res.alias,

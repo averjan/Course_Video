@@ -1,7 +1,8 @@
 //const socket = io('http://localhost:4000');
 // const desktopCapturer = require('electron')
-const socket = io('http://192.168.100.7:4000');
+const socket = io(mainUrl);
 const peer = new Peer();
+const $ = require('jquery')
 
 let roomID = "room"
 let myVideoStream;
@@ -17,7 +18,9 @@ let capturingScreen = false
 let videoTracks;
 let audioTracks;
 
-ioClient = socket.connect('http://localhost:4000')
+let filePathMap = []
+
+ioClient = socket.connect(mainUrl)
 // ioClient = socket.connect('http://192.168.100.5:4000')
 ioClient.on('connect', socket => {
     ioClient.send('room')
@@ -214,6 +217,8 @@ socket.on('userEnableVideo', function(id) {
 
 })
 
+
+////////// UPLOADING
 const uploadFileSlice = (slice) => {
     alert("swag")
     socket.emit("client-send-file-slice", myId, slice, roomID)
@@ -222,3 +227,38 @@ const uploadFileSlice = (slice) => {
 socket.on("request-file-slice", function (slice) {
     sendRequestedFileSlice(slice)
 })
+
+socket.on("SERVER_FINISH_RECEIVE_FILE", function(){
+
+})
+
+socket.on("CHAT_FILE", function (file) {
+    appendFileToChat(file)
+})
+
+let callToDownload
+
+$(function() {
+    callToDownload = function (file, id) {
+        let fileName = file.name
+        let path = filePathMap[id]
+        alert(path)
+        $.ajax({
+            type: 'GET',
+            url: mainUrl + path,
+            success: function (data) {
+                let blob = new Blob([new Uint8Array(data.data.data)], {
+                    type: data.type
+                });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = fileName;
+                // console.log(data);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })
+    }
+})
+
