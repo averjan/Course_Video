@@ -220,7 +220,6 @@ socket.on('userEnableVideo', function(id) {
 
 ////////// UPLOADING
 const uploadFileSlice = (slice) => {
-    alert("swag")
     socket.emit("client-send-file-slice", myId, slice, roomID)
 }
 
