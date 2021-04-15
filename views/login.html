@@ -3,16 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="../js/global_vars.js" charset="utf-8" defer></script>
 </head>
 <body>
     <a id="click-room" href="http://192.168.1.101:4000/room">Swag</a>
-    <input type="text">
-    <button id="room">Button</button>
+    <input id="room-blank" type="text">
+    <button id="join">Join</button>
+    <button id="create">Create</button>
 
     <script>
         const { ipcRenderer } = require('electron')
-        document.getElementById("room").addEventListener("click", (event) => {
-            ipcRenderer.send("changeRoom", "room")
+        const $ = require('jquery')
+        document.getElementById("join").addEventListener("click", (event) => {
+            roomID = document.getElementById("room-blank").value
+            const Http = new XMLHttpRequest()
+            Http.responseType = 'json'
+            const url = mainUrl + "/checkRoom/" + roomID
+            Http.open("GET", url)
+            Http.send()
+
+            Http.onload = function () {
+                if (Http.response.status) {
+                    ipcRenderer.send("changeRoom", roomID)
+                }
+            }
+        })
+
+        document.getElementById("create").addEventListener("click", (event) => {
+            const Http = new XMLHttpRequest()
+            Http.responseType = 'json'
+            roomID = document.getElementById("room-blank").value
+            const url = mainUrl + "/checkRoom/" + roomID
+            Http.open("GET", url)
+            Http.send()
+
+            Http.onload = function () {
+                if (!Http.response.status) {
+                    ipcRenderer.send("changeRoom", roomID)
+                }
+            }
         })
     </script>
 </body>

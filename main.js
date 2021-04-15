@@ -40,9 +40,11 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on("changeRoom", (event, roomID) => {
+    userRoomID = roomID
     defaultWindow.loadFile('views/index.html')
 })
 
 ipcMain.on("sendRoomId", (event) => {
+    console.log(userRoomID)
     event.reply("getRoomId", userRoomID)
 })

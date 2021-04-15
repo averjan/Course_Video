@@ -17,6 +17,7 @@ secure = config.secure || false;
 let server = require('http').createServer(app);
 
 let mainScreenUser = -1
+let rooms = []
 /*
 if (secure)
 {
@@ -49,7 +50,7 @@ app.get('/' , (req,res)=>{
     res.send(uuidv4());
 });
 
-app.get('/:room' , (req,res)=>{
+app.get('/room/:room' , (req,res)=>{
     console.log("swag room");
     console.log(req.params.room)
     console.log("end params");
@@ -80,12 +81,33 @@ app.get('/files/:fileName', function (req, res, next) {
 
 })
 
-io.on("connection" , socket => {
-    console.log("swage")
+app.get('/checkRoom/:id', function(req, res, next) {
+    let newID = req.params.id
+    //const rooms = io.of("/").adapter.rooms;
+    // console.log(io.sockets.adapter.rooms)
+    let statusFound = false
+    rooms.forEach(r => {
+        if (r.name === newID) {
+            statusFound = true
+        }
+        console.log(r.name + " " + newID)
+    })
 
+    if (statusFound) {
+        console.log(true)
+        res.json({ status: true })
+    }
+    else {
+        console.log(false)
+        res.json({ status: false })
+    }
+})
+
+io.on("connection" , socket => {
     socket.on('newUser' , (id , room)=>{
         socket.join(room);
-        console.log("swag2")
+        console.log(room)
+        rooms.push({ name: room, screen: -1 })
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
         console.log("captured screen")
