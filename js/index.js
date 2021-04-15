@@ -1,3 +1,5 @@
+const { ipcRenderer } = require('electron')
+
 function openForm() {
     let panel = document.getElementById("chat-panel");
     panel.style.display = (panel.style.display === "flex") ? "none" : "flex"
@@ -13,5 +15,13 @@ document.getElementById("send-btn").addEventListener('click', (event) =>{
         shareFile(file)
         file = null
     }
+})
+
+function loadBody() {
+    ipcRenderer.send("sendRoomId")
+}
+
+ipcRenderer.on("getRoomId", (event, id) => {
+    roomID = id
 })
 

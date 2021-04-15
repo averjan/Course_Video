@@ -9,6 +9,7 @@ const app = express();
 const config = require('./config')
 const mmm = require('mmmagic')
 var Magic = require('mmmagic').Magic;
+const ejs = require('ejs')
 
 let port = process.env.PORT || 4000,
 secure = config.secure || false;
@@ -53,7 +54,12 @@ app.get('/:room' , (req,res)=>{
     console.log(req.params.room)
     console.log("end params");
     //res.render('index' , {RoomId:req.params.room});
-    res.render('index' , {RoomId : req.params.room});
+    // res.render('index' , {RoomId : req.params.room});
+    let page = fs.readFileSync('views/index1.ejs', 'utf-8')
+    console.log(page)
+    let renderedPage = ejs.render(page, {RoomId : req.params.room})
+    res.send(renderedPage)
+    //res.render('index1' , {RoomId : req.params.room});
 });
 
 app.get('/files/:fileName', function (req, res, next) {

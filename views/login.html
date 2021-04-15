@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <a id="click-room" href="http://192.168.1.101:4000/room">Swag</a>
+    <input type="text">
+    <button id="room">Button</button>
+
+    <script>
+        const { ipcRenderer } = require('electron')
+        document.getElementById("room").addEventListener("click", (event) => {
+            ipcRenderer.send("changeRoom", "room")
+        })
+    </script>
+</body>
+</html>

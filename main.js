@@ -1,5 +1,9 @@
 const { app, BrowserWindow } = require('electron')
+const { ipcMain } = require('electron')
 const path = require('path')
+
+let defaultWindow;
+let userRoomID;
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -13,7 +17,9 @@ function createWindow () {
         }
     })
 
-    win.loadFile('views/index.html')
+    win.loadFile('views/login.html')
+    defaultWindow = win
+    //win.loadFile('views/index.html')
     //win.loadURL('http://localhost:4000/room')
 }
 
@@ -31,4 +37,12 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
+})
+
+ipcMain.on("changeRoom", (event, roomID) => {
+    defaultWindow.loadFile('views/index.html')
+})
+
+ipcMain.on("sendRoomId", (event) => {
+    event.reply("getRoomId", userRoomID)
 })

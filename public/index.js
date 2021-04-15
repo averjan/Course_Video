@@ -4,7 +4,7 @@ const socket = io(mainUrl);
 const peer = new Peer();
 const $ = require('jquery')
 
-let roomID = "room"
+// let roomID = "room"
 let myVideoStream;
 let myId;
 let videoGrid = document.getElementById('videoDiv')

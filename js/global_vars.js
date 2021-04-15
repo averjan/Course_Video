@@ -3,4 +3,5 @@ let uploading = false;
 let fileReader;
 let tempFile;
 let tempFileName;
-const mainUrl = "http://localhost:4000"
+let roomID;
+const mainUrl = "http://192.168.1.101:4000"
