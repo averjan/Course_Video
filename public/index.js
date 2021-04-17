@@ -119,7 +119,11 @@ function addVideo(video , stream){
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
-    videoGrid.append(video);
+
+    let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
+    gridElement.children[0].appendChild(video)
+    videoGrid.appendChild(gridElement)
+    //videoGrid.append(video);
 }
 
 function setMainVid(stream){

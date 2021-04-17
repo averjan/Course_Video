@@ -18,10 +18,12 @@ body {
 #videoDiv {
     display: grid;
     grid-gap: 10px;
-    height: 80%;
+    /*height: 80%;*/
     position: relative;
     grid-template-columns: repeat(auto-fill, 300px);
     grid-auto-rows: 300px;
+
+    height: 300px;
 }
 
 #footer {
@@ -156,3 +158,21 @@ button {
 #messages > li { padding: 0.5rem 1rem; }
 #messages > li:nth-child(odd) { background: #efefef; }
 
+#user-vid {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    /* margin-left: 200px; */
+    bottom: 0;
+}
+
+#control-video {
+    position: absolute;
+    /* margin-bottom: 20px; */
+    width: 300px;
+    z-index: 1;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+}

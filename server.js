@@ -106,8 +106,7 @@ app.get('/checkRoom/:id', function(req, res, next) {
 io.on("connection" , socket => {
     socket.on('newUser' , (id , room)=>{
         socket.join(room);
-        console.log(room)
-        rooms.push({ name: room, screen: -1 })
+        rooms.push({ name: room, screen: -1, users: [id] })
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
         console.log("captured screen")
@@ -116,6 +115,13 @@ io.on("connection" , socket => {
         socket.on('disconnect' , ()=>{
             //socket.to(room).broadcast.emit('userDisconnect' , id);
             //socket.to(room).emit('userDisconnect' , id);
+            let currentRoom = rooms.find((v, i, a) => v.name === room)
+            currentRoom.users.splice(currentRoom.users.indexOf(id), 1)
+            if (currentRoom.users.length === 0) {
+                rooms.splice(rooms.indexOf(currentRoom), 1)
+            }
+            console.log(currentRoom.users.length)
+
             socket.broadcast.to(room).emit('userDisconnect' , id);
         })
     })

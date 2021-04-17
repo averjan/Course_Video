@@ -27,3 +27,14 @@ ipcRenderer.on("getRoomId", (event, userData) => {
     activeUser = new UserApp(userData.userName, userData.userMail, '', userData.roomId, userData.role)
 })
 
+function changeAudioState(e) {
+    if (e.alt === "on") {
+        e.src = "../img/icons/micro_off.svg"
+        e.alt = "off"
+    }
+    else {
+        e.src = "../img/icons/micro_on.svg"
+        e.alt = "on"
+    }
+}
+
