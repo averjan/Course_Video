@@ -33,15 +33,15 @@ navigator.mediaDevices.getUserMedia({
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
-    addVideo(myvideo , stream);
-    peer.on('call' , call=>{
+    addVideo(myvideo , stream, activeUser.id);
+    peer.on('call' , (call, metadata) =>{
         //  || (peerConnections.indexOf(call) > -1)
         // alert(capturingScreen)
         if ((!capturingScreen)) {
             call.answer(myVideoStream);
             const vid = document.createElement('video');
             call.on('stream', userStream => {
-                addVideo(vid, userStream);
+                addVideo(vid, userStream, metadata.metadata);
             })
             call.on('error', (err) => {
                 alert(err)
@@ -67,11 +67,11 @@ peer.on('error' , (err)=>{
     alert(err.type);
 });
 
-socket.on('userJoined' , id=>{
+socket.on('userJoined' , id => {
     alert("new")
-    const call  = peer.call(id , myVideoStream);
+    const call  = peer.call(id , myVideoStream, { metadata: activeUser.id });
     if (capturingScreen){
-        peer.call(id, capturedStream)
+        peer.call(id, capturedStream, { metadata: activeUser.id })
     }
 
     const vid = document.createElement('video');
@@ -79,7 +79,7 @@ socket.on('userJoined' , id=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        addVideo(vid , userStream);
+        addVideo(vid , userStream, id);
     })
     call.on('close' , ()=>{
         vid.remove();
@@ -114,7 +114,7 @@ socket.on('screenCaptured' , id=>{
     // peerConnections[id] = call;
 })
 
-function addVideo(video , stream){
+function addVideo(video , stream, user){
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()

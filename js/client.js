@@ -34,3 +34,7 @@ const sendRequestedFileSlice = (data) => {
         progress = Math.round(place / tempFile.size * 100);
     sendFileSlice(progress, slice);
 }
+
+const setUserAudio = (status, user) => {
+
+}
