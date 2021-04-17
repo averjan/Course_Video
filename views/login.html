@@ -8,13 +8,18 @@
 </head>
 <body>
     <a id="click-room" href="http://192.168.1.101:4000/room">Swag</a>
-    <input id="room-blank" type="text">
+    <input id="user-name" type="text" placeholder="Your Name">
+    <input id="user-email" type="email" placeholder="Email">
+    <input id="room-blank" type="text" placeholder="Room ID">
     <button id="join">Join</button>
     <button id="create">Create</button>
 
     <script>
+        const { ROLE } = require('../js/roles')
         const { ipcRenderer } = require('electron')
         const $ = require('jquery')
+
+        // Join event
         document.getElementById("join").addEventListener("click", (event) => {
             roomID = document.getElementById("room-blank").value
             const Http = new XMLHttpRequest()
@@ -25,11 +30,14 @@
 
             Http.onload = function () {
                 if (Http.response.status) {
-                    ipcRenderer.send("changeRoom", roomID)
+                    let userName = document.getElementById("user-name").value
+                    let userMail = document.getElementById("user-email").value
+                    ipcRenderer.send("changeRoom", roomID, userName, userMail, ROLE.guest)
                 }
             }
         })
 
+        // Create event
         document.getElementById("create").addEventListener("click", (event) => {
             const Http = new XMLHttpRequest()
             Http.responseType = 'json'
@@ -40,7 +48,9 @@
 
             Http.onload = function () {
                 if (!Http.response.status) {
-                    ipcRenderer.send("changeRoom", roomID)
+                    let userName = document.getElementById("user-name").value
+                    let userMail = document.getElementById("user-email").value
+                    ipcRenderer.send("changeRoom", roomID,  userName, userMail, ROLE.guest)
                 }
             }
         })

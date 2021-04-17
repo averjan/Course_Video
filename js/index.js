@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron')
+const { UserApp } = require('../public/client/user')
 
 function openForm() {
     let panel = document.getElementById("chat-panel");
@@ -21,7 +22,8 @@ function loadBody() {
     ipcRenderer.send("sendRoomId")
 }
 
-ipcRenderer.on("getRoomId", (event, id) => {
-    roomID = id
+ipcRenderer.on("getRoomId", (event, userData) => {
+    roomID = userData.roomId
+    activeUser = new UserApp(userData.userName, userData.userMail, '', userData.roomId, userData.role)
 })
 

@@ -59,11 +59,14 @@ navigator.mediaDevices.getUserMedia({
 peer.on('open' , (id)=>{
     //alert("nol")
     myId = id;
+    activeUser.id = id
     socket.emit("newUser" , id , roomID);
 })
+
 peer.on('error' , (err)=>{
     alert(err.type);
 });
+
 socket.on('userJoined' , id=>{
     alert("new")
     const call  = peer.call(id , myVideoStream);

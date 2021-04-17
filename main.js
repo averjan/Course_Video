@@ -3,7 +3,7 @@ const { ipcMain } = require('electron')
 const path = require('path')
 
 let defaultWindow;
-let userRoomID;
+let userData;
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -39,12 +39,18 @@ app.on('window-all-closed', () => {
     }
 })
 
-ipcMain.on("changeRoom", (event, roomID) => {
-    userRoomID = roomID
+ipcMain.on("changeRoom", (event, roomID, userName, userMail, role) => {
+    userData = {
+        roomId: roomID,
+        userName: userName,
+        userMail: userMail,
+        role: role
+    }
+
     defaultWindow.loadFile('views/index.html')
 })
 
 ipcMain.on("sendRoomId", (event) => {
-    console.log(userRoomID)
-    event.reply("getRoomId", userRoomID)
+    console.log(userData)
+    event.reply("getRoomId", userData)
 })
