@@ -27,13 +27,13 @@ ioClient.on('connect', socket => {
 })
 
 navigator.mediaDevices.getUserMedia({
-    video:false,
+    video:true,
     audio:true
 }).then((stream)=>{
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
-    addVideo(myvideo , stream, activeUser.id);
+    addVideo(myvideo , stream);
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
         // alert(capturingScreen)
@@ -42,14 +42,14 @@ navigator.mediaDevices.getUserMedia({
             call.answer(myVideoStream);
             const vid = document.createElement('video');
             call.on('stream', userStream => {
-                addVideo(vid, userStream, call.metadata.id);
+                alert('call')
+                addVideo(vid, userStream);
             })
             call.on('error', (err) => {
                 alert(err)
             })
         }
         else {
-            alert(capturedStream)
             call.answer(capturedStream)
         }
     })
@@ -71,9 +71,11 @@ peer.on('error' , (err)=>{
 
 socket.on('userJoined' , id => {
     alert("new")
-    const call  = peer.call(id , myVideoStream, { metadata: {id: activeUser.id } });
+    //const call  = peer.call(id , myVideoStream, { metadata: {id: activeUser.id } });
+    const call  = peer.call(id , myVideoStream);
+    console.log(myVideoStream.getTracks().length)
     if (capturingScreen){
-        peer.call(id, capturedStream, { metadata: {id: activeUser.id } })
+        peer.call(id, capturedStream)
     }
 
     const vid = document.createElement('video');
@@ -81,7 +83,8 @@ socket.on('userJoined' , id => {
         alert(err);
     })
     call.on('stream' , userStream=>{
-        addVideo(vid , userStream, id);
+        alert('call2')
+        addVideo(vid , userStream);
     })
     call.on('close' , ()=>{
         vid.remove();
@@ -117,7 +120,7 @@ socket.on('screenCaptured' , id=>{
     console.log(call)
 })
 
-function addVideo(video , stream, user){
+function addVideo(video , stream){
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()
@@ -125,9 +128,10 @@ function addVideo(video , stream, user){
 
     let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
     gridElement.children[0].appendChild(video)
-    videoGrid.appendChild(gridElement)
+    videoGrid.appendChild(gridElement.children[0])
     //videoGrid.append(video);
 }
+
 
 function setMainVid(stream){
     let mainVideo = document.getElementById("vid-main")
