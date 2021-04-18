@@ -158,7 +158,7 @@ button {
 #messages > li { padding: 0.5rem 1rem; }
 #messages > li:nth-child(odd) { background: #efefef; }
 
-#user-vid {
+.user-vid {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -167,7 +167,7 @@ button {
     bottom: 0;
 }
 
-#control-video {
+.control-video {
     position: absolute;
     /* margin-bottom: 20px; */
     width: 300px;

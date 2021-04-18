@@ -36,7 +36,7 @@ navigator.mediaDevices.getUserMedia({
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
     socket.emit('synchronizeScreen', roomID)
-    addVideo(myvideo , stream);
+    addVideo(myvideo , stream, 'self');
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
         // alert(capturingScreen)
@@ -47,7 +47,7 @@ navigator.mediaDevices.getUserMedia({
                 const vid = document.createElement('video');
                 call.on('stream', userStream => {
                     if (otherStreams.indexOf(call.metadata.id) < 0) {
-                        addVideo(vid, userStream);
+                        addVideo(vid, userStream, call.metadata.id);
                         otherStreams.push(call.metadata.id)
                     }
                 })
@@ -87,7 +87,7 @@ socket.on('userJoined' , id => {
     })
     call.on('stream' , userStream=>{
         if (count_connect === 0) {
-            addVideo(vid, userStream);
+            addVideo(vid, userStream, id);
             count_connect++
         }
     })
@@ -125,7 +125,7 @@ socket.on('screenCaptured' , id=>{
     console.log(call)
 })
 
-function addVideo(video , stream){
+function addVideo(video , stream, user){
     console.log(stream)
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
@@ -134,6 +134,7 @@ function addVideo(video , stream){
 
     let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
     gridElement.children[0].appendChild(video)
+    gridElement.children[0].id = user
     videoGrid.appendChild(gridElement.children[0])
     //videoGrid.append(video);
 }
@@ -191,7 +192,7 @@ async function startCapture() {
                             }
                         }
                     })
-                    addVideo(screen_video, stream)
+                    addVideo(screen_video, stream, 'r')
                 } catch (e) {
                     console.log(e)
                 }
