@@ -22,9 +22,27 @@ function loadBody() {
     ipcRenderer.send("sendRoomId")
 }
 
+String.prototype.splice = function(idx, rem, str) {
+    return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+};
+
 ipcRenderer.on("getRoomId", (event, userData) => {
     roomID = userData.roomId
+    console.log(userData)
     activeUser = new UserApp(userData.userName, userData.userMail, '', userData.roomId, userData.role)
+    if (activeUser.admin) {
+        let xmlString = "        <div class=\"control-video\">\n" +
+            "            <img onclick=\"changeAudioState(this)\" src=\"../img/icons/micro_on.svg\" alt=\"on\" style=\"height: 40px;\">\n" +
+            "            <img onclick=\"changeVideoState(this)\" src=\"../img/icons/video_on.svg\" alt=\"on\" style=\"height: 40px;\">\n" +
+            "        </div>"
+        let template = document.getElementById('user-video-template')
+        template.innerHTML = template.innerHTML.splice(template.innerHTML.lastIndexOf('</div>'), 0, xmlString)
+        // let docFragment = template.content.cloneNode(true)
+        console.log(template.innerHTML)
+        let panel = new DOMParser().parseFromString(xmlString, "text/html")
+        //template.children[0].appendChild(panel)
+        //template.insertAdjacentHTML('afterbegin', xmlString)
+    }
 })
 
 function changeAudioState(e) {

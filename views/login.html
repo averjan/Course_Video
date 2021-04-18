@@ -50,7 +50,7 @@
                 if (!Http.response.status) {
                     let userName = document.getElementById("user-name").value
                     let userMail = document.getElementById("user-email").value
-                    ipcRenderer.send("changeRoom", roomID,  userName, userMail, ROLE.guest)
+                    ipcRenderer.send("changeRoom", roomID,  userName, userMail, ROLE.admin)
                 }
             }
         })
