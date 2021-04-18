@@ -33,6 +33,7 @@ navigator.mediaDevices.getUserMedia({
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
+    socket.emit('synchronizeScreen', roomID)
     addVideo(myvideo , stream);
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
@@ -42,7 +43,6 @@ navigator.mediaDevices.getUserMedia({
             call.answer(myVideoStream);
             const vid = document.createElement('video');
             call.on('stream', userStream => {
-                alert('call')
                 addVideo(vid, userStream);
             })
             call.on('error', (err) => {
@@ -71,26 +71,27 @@ peer.on('error' , (err)=>{
 
 socket.on('userJoined' , id => {
     alert("new")
-    //const call  = peer.call(id , myVideoStream, { metadata: {id: activeUser.id } });
     const call  = peer.call(id , myVideoStream);
-    console.log(myVideoStream.getTracks().length)
+    peerConnections[id] = call;
     if (capturingScreen){
         peer.call(id, capturedStream)
     }
 
+    let count_connect = 0;
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        alert('call2')
-        addVideo(vid , userStream);
+        if (count_connect === 0) {
+            addVideo(vid, userStream);
+            count_connect++
+        }
     })
     call.on('close' , ()=>{
         vid.remove();
         console.log("user disconect")
     })
-    peerConnections[id] = call;
 })
 
 socket.on('userDisconnect' , id=>{
@@ -101,6 +102,7 @@ socket.on('userDisconnect' , id=>{
 
 socket.on('screenCaptured' , id=>{
     alert("caputred")
+    console.log(id)
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
     call.on('error' , (err)=>{

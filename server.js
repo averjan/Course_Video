@@ -37,6 +37,7 @@ else
 // const md5 = require("md5");
 const storage = new Storage()
 const io = require("socket.io")(server);
+
 const {v4:uuidv4} = require('uuid');
 const {ExpressPeerServer} = require('peer')
 const peer = ExpressPeerServer(server , {
@@ -85,6 +86,13 @@ app.get('/checkRoom/:id', function(req, res, next) {
     let newID = req.params.id
     //const rooms = io.of("/").adapter.rooms;
     // console.log(io.sockets.adapter.rooms)
+    if (typeof rooms[newID] != 'undefined') {
+        res.json({ status: true })
+    }
+    else {
+        res.json({ status: false })
+    }
+    /*
     let statusFound = false
     rooms.forEach(r => {
         if (r.name === newID) {
@@ -101,26 +109,32 @@ app.get('/checkRoom/:id', function(req, res, next) {
         console.log(false)
         res.json({ status: false })
     }
+    */
 })
 
 io.on("connection" , socket => {
     socket.on('newUser' , (id , room)=>{
         socket.join(room);
-        rooms.push({ name: room, screen: -1, users: [id] })
+        //rooms.push({ name: room, screen: -1, users: [id] })
+        if (typeof rooms[room] == 'undefined') {
+            rooms[room] = { screen: -1, users: [id]}
+        }
+        else {
+            rooms[room].users.push(id)
+        }
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
         console.log("captured screen")
 
-        //socket.to(room).broadcast.emit('userJoined' , id);
         socket.on('disconnect' , ()=>{
             //socket.to(room).broadcast.emit('userDisconnect' , id);
             //socket.to(room).emit('userDisconnect' , id);
-            let currentRoom = rooms.find((v, i, a) => v.name === room)
-            currentRoom.users.splice(currentRoom.users.indexOf(id), 1)
+            let currentRoom = rooms[room]
+            rooms[room].users.splice(currentRoom.users.indexOf(id), 1)
             if (currentRoom.users.length === 0) {
-                rooms.splice(rooms.indexOf(currentRoom), 1)
+                //rooms.splice(rooms.indexOf(currentRoom), 1)
+                rooms[room] = undefined
             }
-            console.log(currentRoom.users.length)
 
             socket.broadcast.to(room).emit('userDisconnect' , id);
         })
@@ -128,8 +142,17 @@ io.on("connection" , socket => {
 
 
     socket.on("screenCaptured", (id, room)=>{
-        mainScreenUser = id
+        rooms[room].screen = id
+        console.log(id)
         socket.broadcast.to(room).emit('screenCaptured' , id);
+    })
+
+    socket.on("synchronizeScreen", (room) => {
+        if (rooms[room].screen !== -1) {
+            console.log(rooms[room].screen)
+            socket.emit('screenCaptured', rooms[room].screen)
+        }
+
     })
 
     socket.on("getScreen", id=>{
