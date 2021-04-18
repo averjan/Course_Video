@@ -27,27 +27,29 @@ ioClient.on('connect', socket => {
 })
 
 navigator.mediaDevices.getUserMedia({
-    video:true,
+    video:false,
     audio:true
 }).then((stream)=>{
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
     addVideo(myvideo , stream, activeUser.id);
-    peer.on('call' , (call, metadata) =>{
+    peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
         // alert(capturingScreen)
+        // alert(call.metadata.id)
         if ((!capturingScreen)) {
             call.answer(myVideoStream);
             const vid = document.createElement('video');
             call.on('stream', userStream => {
-                addVideo(vid, userStream, metadata.metadata);
+                addVideo(vid, userStream, call.metadata.id);
             })
             call.on('error', (err) => {
                 alert(err)
             })
         }
         else {
+            alert(capturedStream)
             call.answer(capturedStream)
         }
     })
@@ -69,9 +71,9 @@ peer.on('error' , (err)=>{
 
 socket.on('userJoined' , id => {
     alert("new")
-    const call  = peer.call(id , myVideoStream, { metadata: activeUser.id });
+    const call  = peer.call(id , myVideoStream, { metadata: {id: activeUser.id } });
     if (capturingScreen){
-        peer.call(id, capturedStream, { metadata: activeUser.id })
+        peer.call(id, capturedStream, { metadata: {id: activeUser.id } })
     }
 
     const vid = document.createElement('video');
@@ -98,13 +100,13 @@ socket.on('screenCaptured' , id=>{
     alert("caputred")
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
-    let i = 0
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
         // alert(userStream.getTracks().length)
         // addVideo(vid, userStream);
+        console.log("create")
         setMainVid(userStream)
     })
     call.on('close' , ()=>{
@@ -112,6 +114,7 @@ socket.on('screenCaptured' , id=>{
         console.log("user disconect")
     })
     // peerConnections[id] = call;
+    console.log(call)
 })
 
 function addVideo(video , stream, user){

@@ -76,11 +76,14 @@ async function selectSource(source) {
     //myVideoStream.addTrack(stream.getTracks()[0])
     capturedStream = stream
     //let ms = new MediaStream([myVideoStream.getTracks()[2]])
+    /*
     let mainVideo = document.getElementById("vid-main")
     mainVideo.srcObject = stream;
     mainVideo.addEventListener('loadedmetadata', () => {
         mainVideo.play()
     })
+    */
+    setMainVid(capturedStream)
     //addVideo(mainVideo, capturedStream)
 
     capturingScreen = true
