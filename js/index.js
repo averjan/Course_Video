@@ -40,6 +40,19 @@ function changeAudioState(e) {
     }
 }
 
+function changeVideoState(e) {
+    let userID = e.parentElement.parentElement.id
+    shutDownOtherVideo(userID)
+    if (e.alt === "on") {
+        e.src = "../img/icons/video_off.svg"
+        e.alt = "off"
+    }
+    else {
+        e.src = "../img/icons/video_on.svg"
+        e.alt = "on"
+    }
+}
+
 document.getElementById("video-stream-control").onclick = function(event){
     shutDownSelfVideo()
 }

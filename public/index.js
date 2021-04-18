@@ -204,8 +204,11 @@ async function startCapture() {
 
 // Stream control
 function shutDownOtherAudio(userID) {
-    console.log('shutDownOtherAudio')
     socket.emit("shutDownUserAudio", userID, activeUser.room)
+}
+
+function shutDownOtherVideo(userID) {
+    socket.emit("shutDownUserVideo", userID, activeUser.room)
 }
 
 function shutDownSelfVideo() {
@@ -231,8 +234,11 @@ function shutDownSelfAudio() {
 }
 
 socket.on('shutMeDownAudio', () => {
-    console.log('i shut downed')
     shutDownSelfAudio()
+})
+
+socket.on('shutMeDownVideo', () => {
+    shutDownSelfVideo()
 })
 
 document.getElementById("audio-stream-control").onclick = function(event){

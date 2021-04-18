@@ -182,6 +182,15 @@ io.on("connection" , socket => {
         destSocket.socket.emit('shutMeDownAudio')
     })
 
+    socket.on('shutDownUserVideo', (userID, room) => {
+        console.log(userID)
+        let destSocket = rooms[room].users.find((e, i, a) => {
+            return e.id === userID
+        })
+
+        destSocket.socket.emit('shutMeDownVideo')
+    })
+
     socket.on("DisableAudio", (id, room) =>{
         io.to(room).emit('userDisableAudio', id)
     })
