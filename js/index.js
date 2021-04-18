@@ -28,6 +28,8 @@ ipcRenderer.on("getRoomId", (event, userData) => {
 })
 
 function changeAudioState(e) {
+    let userID = e.parentElement.parentElement.id
+    shutDownOtherAudio(userID)
     if (e.alt === "on") {
         e.src = "../img/icons/micro_off.svg"
         e.alt = "off"
@@ -36,5 +38,9 @@ function changeAudioState(e) {
         e.src = "../img/icons/micro_on.svg"
         e.alt = "on"
     }
+}
+
+document.getElementById("video-stream-control").onclick = function(event){
+    shutDownSelfVideo()
 }
 

@@ -117,10 +117,10 @@ io.on("connection" , socket => {
         socket.join(room);
         //rooms.push({ name: room, screen: -1, users: [id] })
         if (typeof rooms[room] == 'undefined') {
-            rooms[room] = { screen: -1, users: [id]}
+            rooms[room] = { screen: -1, users: [{ id: id, socket: socket }]}
         }
         else {
-            rooms[room].users.push(id)
+            rooms[room].users.push({ id: id, socket: socket })
         }
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
@@ -130,7 +130,7 @@ io.on("connection" , socket => {
             //socket.to(room).broadcast.emit('userDisconnect' , id);
             //socket.to(room).emit('userDisconnect' , id);
             let currentRoom = rooms[room]
-            rooms[room].users.splice(currentRoom.users.indexOf(id), 1)
+            rooms[room].users.splice(currentRoom.users.indexOf({ id: id, socket: socket }), 1)
             if (currentRoom.users.length === 0) {
                 //rooms.splice(rooms.indexOf(currentRoom), 1)
                 rooms[room] = undefined
@@ -169,6 +169,17 @@ io.on("connection" , socket => {
     socket.on('client-send-file-slice', (id, slice, room) =>{
         console.log("start file")
         storeFileSlice(socket, id, slice, room);
+    })
+
+
+    // Stream control
+    socket.on('shutDownUserAudio', (userID, room) => {
+        console.log(userID)
+        let destSocket = rooms[room].users.find((e, i, a) => {
+            return e.id === userID
+        })
+
+        destSocket.socket.emit('shutMeDownAudio')
     })
 
     socket.on("DisableAudio", (id, room) =>{

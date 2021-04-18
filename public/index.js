@@ -203,7 +203,12 @@ async function startCapture() {
 }
 
 // Stream control
-document.getElementById("video-stream-control").onclick = function(event){
+function shutDownOtherAudio(userID) {
+    console.log('shutDownOtherAudio')
+    socket.emit("shutDownUserAudio", userID, activeUser.room)
+}
+
+function shutDownSelfVideo() {
     if (videoTracks[0].enabled) {
         videoTracks[0].enabled = false
         socket.emit("DisableVideo", myId, roomID)
@@ -213,6 +218,22 @@ document.getElementById("video-stream-control").onclick = function(event){
         socket.emit("EnableVideo", myId, roomID)
     }
 }
+
+function shutDownSelfAudio() {
+    if (audioTracks[0].enabled) {
+        audioTracks[0].enabled = false
+        socket.emit("DisableAudio", myId, roomID)
+    }
+    else {
+        audioTracks[0].enabled = true
+        socket.emit("EnableAudio", myId, roomID)
+    }
+}
+
+socket.on('shutMeDownAudio', () => {
+    console.log('i shut downed')
+    shutDownSelfAudio()
+})
 
 document.getElementById("audio-stream-control").onclick = function(event){
     if (audioTracks[0].enabled) {
