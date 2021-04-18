@@ -7,6 +7,8 @@ const $ = require('jquery')
 // let roomID = "room"
 let myVideoStream;
 let myId;
+let otherStreams = [];
+
 let videoGrid = document.getElementById('videoDiv')
 let myvideo = document.createElement('video');
 let screen_video = document.createElement('video');
@@ -40,14 +42,19 @@ navigator.mediaDevices.getUserMedia({
         // alert(capturingScreen)
         // alert(call.metadata.id)
         if ((!capturingScreen)) {
-            call.answer(myVideoStream);
-            const vid = document.createElement('video');
-            call.on('stream', userStream => {
-                addVideo(vid, userStream);
-            })
-            call.on('error', (err) => {
-                alert(err)
-            })
+            if (otherStreams.indexOf(call.metadata.id) < 0) {
+                call.answer(myVideoStream);
+                const vid = document.createElement('video');
+                call.on('stream', userStream => {
+                    if (otherStreams.indexOf(call.metadata.id) < 0) {
+                        addVideo(vid, userStream);
+                        otherStreams.push(call.metadata.id)
+                    }
+                })
+                call.on('error', (err) => {
+                    alert(err)
+                })
+            }
         }
         else {
             call.answer(capturedStream)
@@ -71,12 +78,8 @@ peer.on('error' , (err)=>{
 
 socket.on('userJoined' , id => {
     alert("new")
-    const call  = peer.call(id , myVideoStream);
+    const call  = peer.call(id , myVideoStream, {metadata: {id: activeUser.id }});
     peerConnections[id] = call;
-    if (capturingScreen){
-        peer.call(id, capturedStream)
-    }
-
     let count_connect = 0;
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
@@ -123,6 +126,7 @@ socket.on('screenCaptured' , id=>{
 })
 
 function addVideo(video , stream){
+    console.log(stream)
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()
