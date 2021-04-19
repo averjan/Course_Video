@@ -17,9 +17,9 @@ function createWindow () {
         }
     })
 
-    win.loadFile('views/login.html')
+    //win.loadFile('views/login.html')
     defaultWindow = win
-    //win.loadFile('views/index.html')
+    win.loadFile('views/index.html')
     //win.loadURL('http://localhost:4000/room')
 }
 

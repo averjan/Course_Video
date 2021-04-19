@@ -1,12 +1,14 @@
+const { UserApp } = require('../public/client/user')
 let file;
 let uploading = false;
 let fileReader;
 let tempFile;
 let tempFileName;
-let roomID;
+let roomID = 'room';
 const mainUrl = "http://localhost:4000"
 
-let activeUser
+// temp initialized user
+let activeUser = new UserApp('name', 'email', '', roomID, ROLE.admin)
 
 const MICRO = {
     on: true,

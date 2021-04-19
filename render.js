@@ -118,6 +118,7 @@ function cancelVideoSources()
     videoCancelShareBtn.hidden = true
     videoSelectBtn.hidden = false
     capturedStream.getTracks()[0].stop()
+    console.log(document.getElementById('vid-main').srcObject)
     // document.getElementById("screen-share").remove()
 }
 
