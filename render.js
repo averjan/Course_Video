@@ -14,12 +14,14 @@ const recordedChunks = [];
 // Buttons
 const videoElement = document.createElement('video');
 
+/*
 const startBtn = document.getElementById('screen-stream');
 startBtn.onclick = e => {
     mediaRecorder.start();
     startBtn.classList.add('is-danger');
     startBtn.innerText = 'Recording';
 };
+
 
 const stopBtn = document.getElementById('screen-stop');
 
@@ -28,9 +30,14 @@ stopBtn.onclick = e => {
     startBtn.classList.remove('is-danger');
     startBtn.innerText = 'Start';
 };
+*/
+
+const mainVidPad = document.getElementById('vid-pad')
+const mainVideoScreen = document.getElementById('vid-main')
 
 const videoSelectBtn = document.getElementById('screen-select');
 videoSelectBtn.onclick = getVideoSources;
+
 const videoCancelShareBtn = document.getElementById('screen-cancel-select');
 videoCancelShareBtn.hidden = true;
 videoCancelShareBtn.onclick = cancelVideoSources
@@ -56,7 +63,7 @@ async function getVideoSources() {
 // Change the videoSource window to record
 async function selectSource(source) {
 
-    videoSelectBtn.innerText = source.name;
+    // videoSelectBtn.innerText = source.name;
 
     const constraints = {
         audio: false,
@@ -72,9 +79,12 @@ async function selectSource(source) {
     const stream = await navigator.mediaDevices
         .getUserMedia(constraints);
 
-    alert(myVideoStream.getVideoTracks().length)
     //myVideoStream.addTrack(stream.getTracks()[0])
     capturedStream = stream
+    mainVidPad.style.height = '100%'
+    document.getElementById('vid-main-block').style.flexGrow = '1'
+    document.getElementById('vid-panel').style.flexGrow = '0'
+    document.getElementById('control-panel').className = 'disabled-control-panel'
     //let ms = new MediaStream([myVideoStream.getTracks()[2]])
     /*
     let mainVideo = document.getElementById("vid-main")
@@ -119,6 +129,10 @@ function cancelVideoSources()
     videoSelectBtn.hidden = false
     capturedStream.getTracks()[0].stop()
     console.log(document.getElementById('vid-main').srcObject)
+    mainVidPad.style.height = '0'
+    document.getElementById('vid-main-block').style.flexGrow = '0'
+    document.getElementById('vid-panel').style.flexGrow = '1'
+    document.getElementById('control-panel').className = 'active-control-panel'
     // document.getElementById("screen-share").remove()
 }
 

@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron')
-const { UserApp } = require('../public/client/user')
+//const { UserApp } = require('../public/client/user')
 
 function openForm() {
     let panel = document.getElementById("chat-panel");

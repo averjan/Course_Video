@@ -52,5 +52,5 @@ ipcMain.on("changeRoom", (event, roomID, userName, userMail, role) => {
 
 ipcMain.on("sendRoomId", (event) => {
     console.log(userData)
-    event.reply("getRoomId", userData)
+    //event.reply("getRoomId", userData)
 })

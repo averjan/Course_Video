@@ -1,6 +1,7 @@
 //const socket = io('http://localhost:4000');
 // const desktopCapturer = require('electron')
 const socket = io(mainUrl);
+
 const peer = new Peer();
 const $ = require('jquery')
 
@@ -148,7 +149,7 @@ function setMainVid(stream){
     })
 }
 // Capture screen
-
+/*
 document.getElementById("screen-stream").onclick = function(event){
     if (captureScreen == null) {
         captureScreen = startCapture()
@@ -157,7 +158,7 @@ document.getElementById("screen-stream").onclick = function(event){
         captureScreen = null
     }
 }
-
+*/
 /*
 async function startCapture() {
     const displayMediaOptions = {video: false, audio: false}

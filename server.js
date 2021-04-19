@@ -149,7 +149,6 @@ io.on("connection" , socket => {
 
     socket.on("synchronizeScreen", (room) => {
         if (rooms[room].screen !== -1) {
-            console.log(rooms[room].screen)
             socket.emit('screenCaptured', rooms[room].screen)
         }
 

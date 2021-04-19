@@ -1,4 +1,5 @@
 const { UserApp } = require('../public/client/user')
+const { ROLE } = require('../js/roles')
 let file;
 let uploading = false;
 let fileReader;
@@ -9,7 +10,7 @@ const mainUrl = "http://localhost:4000"
 
 // temp initialized user
 let activeUser = new UserApp('name', 'email', '', roomID, ROLE.admin)
-
+// main.js: sendRoomId event - decomment
 const MICRO = {
     on: true,
     off: false
