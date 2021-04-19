@@ -37,11 +37,6 @@ ipcRenderer.on("getRoomId", (event, userData) => {
             "        </div>"
         let template = document.getElementById('user-video-template')
         template.innerHTML = template.innerHTML.splice(template.innerHTML.lastIndexOf('</div>'), 0, xmlString)
-        // let docFragment = template.content.cloneNode(true)
-        console.log(template.innerHTML)
-        let panel = new DOMParser().parseFromString(xmlString, "text/html")
-        //template.children[0].appendChild(panel)
-        //template.insertAdjacentHTML('afterbegin', xmlString)
     }
 })
 

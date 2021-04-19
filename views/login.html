@@ -3,24 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap');
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
     <script src="../js/global_vars.js" charset="utf-8" defer></script>
     <script src="../js/send_mail.js" charset="utf-8" defer></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
 </head>
 <body>
-    <a id="click-room" href="http://192.168.1.101:4000/room">Swag</a>
-    <input id="user-name" type="text" placeholder="Your Name">
-    <input id="user-email" type="email" placeholder="Email">
-    <input id="room-blank" type="text" placeholder="Room ID">
-    <button id="join">Join</button>
-    <button id="create">Create</button>
+    <div class="central-input">
+        <!--<input id="user-email" type="email" placeholder="Email" required>-->
+        <p id="login-header" class="h1">Yes</p>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@</span>
+            </div>
+            <input id="user-email" type="email" class="form-control" placeholder="Email" aria-label="Username" aria-describedby="basic-addon1" required>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">ID</span>
+            </div>
+            <input id="user-name" type="text" class="form-control" placeholder="Name" aria-label="Email" aria-describedby="basic-addon2" required>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">room</span>
+            </div>
+            <input id="room-blank" type="text" class="form-control" placeholder="Room Name" aria-label="Room" aria-describedby="basic-addon3" required>
+        </div>
+
+        <button id="join" class="btn btn-primary">Join</button>
+        <button id="create" class="btn btn-primary">Create</button>
+    </div>
 
     <script>
         const { ROLE } = require('../js/roles')
         const { ipcRenderer } = require('electron')
         const $ = require('jquery')
+        let mailInput = document.getElementById('user-email')
+        let nameInput = document.getElementById('user-name')
 
         // Join event
         document.getElementById("join").addEventListener("click", (event) => {
+            if (!mailInput.validity.valid || !nameInput.validity.valid) {
+                return;
+            }
+
             roomID = document.getElementById("room-blank").value
             const Http = new XMLHttpRequest()
             Http.responseType = 'json'
@@ -39,6 +74,12 @@
 
         // Create event
         document.getElementById("create").addEventListener("click", (event) => {
+            if (!mailInput.validity.valid || !nameInput.validity.valid) {
+                console.log(mailInput.validity.valid)
+                console.log(nameInput.validity.valid)
+                return;
+            }
+
             const Http = new XMLHttpRequest()
             Http.responseType = 'json'
             roomID = document.getElementById("room-blank").value
