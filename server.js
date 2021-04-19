@@ -195,17 +195,17 @@ io.on("connection" , socket => {
         destSocket.socket.emit('shutMeDownVideo')
     })
 
-    socket.on("DisableAudio", (id, room) =>{
-        io.to(room).emit('userDisableAudio', id)
+    socket.on("DisableAudio", (user) =>{
+        io.to(user.room).emit('userDisableAudio', user.id)
     })
-    socket.on("EnableAudio", (id, room) =>{
-        io.to(room).emit('userEnableAudio', id)
+    socket.on("EnableAudio", (user) =>{
+        io.to(user.room).emit('userEnableAudio', user.id)
     })
-    socket.on("DisableVideo", (id, room) =>{
-        io.to(room).emit('userDisableVideo', id)
+    socket.on("DisableVideo", (user) =>{
+        io.broadcast.to(user.room).emit('userDisableVideo', user.id)
     })
-    socket.on("EnableVideo", (id, room) =>{
-        io.to(room).emit('userEnableAudio', id)
+    socket.on("EnableVideo", (user) =>{
+        io.broadcast.to(user.room).emit('userEnableAudio', user.id)
     })
 })
 

@@ -221,22 +221,30 @@ function shutDownOtherVideo(userID) {
 function shutDownSelfVideo() {
     if (videoTracks[0].enabled) {
         videoTracks[0].enabled = false
-        socket.emit("DisableVideo", myId, roomID)
+        socket.emit("DisableVideo", activeUser)
+        document.getElementById("video-stream-control").className = 'btn btn-danger'
+        document.getElementById('self').children[1].style.display = 'none'
+        document.getElementById('self').children[0].style.display = 'block'
     }
     else {
         videoTracks[0].enabled = true
-        socket.emit("EnableVideo", myId, roomID)
+        socket.emit("EnableVideo", activeUser)
+        document.getElementById("video-stream-control").className = 'btn btn-success'
+        document.getElementById('self').children[0].style.display = 'none'
+        document.getElementById('self').children[1].style.display = 'block'
     }
 }
 
 function shutDownSelfAudio() {
     if (audioTracks[0].enabled) {
         audioTracks[0].enabled = false
-        socket.emit("DisableAudio", myId, roomID)
+        socket.emit("DisableAudio", activeUser)
+        document.getElementById("audio-stream-control").className = 'btn btn-danger'
     }
     else {
         audioTracks[0].enabled = true
-        socket.emit("EnableAudio", myId, roomID)
+        socket.emit("EnableAudio", activeUser)
+        document.getElementById("audio-stream-control").className = 'btn btn-success'
     }
 }
 
@@ -248,27 +256,19 @@ socket.on('shutMeDownVideo', () => {
     shutDownSelfVideo()
 })
 
-document.getElementById("audio-stream-control").onclick = function(event){
-    if (audioTracks[0].enabled) {
-        audioTracks[0].enabled = false
-        socket.emit("DisableAudio", myId, roomID)
-    }
-    else {
-        audioTracks[0].enabled = true
-        socket.emit("EnableAudio", myId, roomID)
-    }
-}
-
-socket.on('userDisableAudio', function(id) {
-    alert("disable");
-})
-socket.on('userEnableAudio', function(id) {
+socket.on('userDisableAudio', function(user) {
 
 })
-socket.on('userDisableVideo', function(id) {
+
+socket.on('userEnableAudio', function(user) {
 
 })
-socket.on('userEnableVideo', function(id) {
+
+socket.on('userDisableVideo', function(user) {
+
+})
+
+socket.on('userEnableVideo', function(user) {
 
 })
 
