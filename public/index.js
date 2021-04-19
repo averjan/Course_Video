@@ -279,12 +279,12 @@ socket.on('shutMeDownVideo', () => {
     shutDownSelfVideo()
 })
 
-socket.on('userDisableAudio', function(user) {
-
+socket.on('userDisableAudio', function(id) {
+    document.getElementById(id).children[0].style.display = 'block'
 })
 
-socket.on('userEnableAudio', function(user) {
-
+socket.on('userEnableAudio', function(id) {
+    document.getElementById(id).children[0].style.display = 'none'
 })
 
 socket.on('userDisableVideo', function(id) {

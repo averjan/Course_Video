@@ -198,10 +198,10 @@ io.on("connection" , socket => {
     })
 
     socket.on("DisableAudio", (user) =>{
-        io.to(user.room).emit('userDisableAudio', user.id)
+        socket.broadcast.to(user.room).emit('userDisableAudio', user.id)
     })
     socket.on("EnableAudio", (user) =>{
-        io.to(user.room).emit('userEnableAudio', user.id)
+        socket.broadcast.to(user.room).emit('userEnableAudio', user.id)
     })
     socket.on("DisableVideo", (user) =>{
         socket.broadcast.to(user.room).emit('userDisableVideo', user.id)

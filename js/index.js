@@ -70,3 +70,7 @@ document.getElementById("video-stream-control").onclick = function(event){
     shutDownSelfVideo()
 }
 
+document.getElementById("audio-stream-control").onclick = function(event){
+    shutDownSelfAudio()
+}
+
