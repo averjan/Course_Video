@@ -304,7 +304,7 @@ const uploadFileSlice = (slice) => {
     socket.emit("client-send-file-slice", myId, slice, roomID)
 }
 
-socket.on("request-file-slice", function (slice) {
+socket.on("SERVER_REQUEST_FILE_SLICE", function (slice) {
     sendRequestedFileSlice(slice)
 })
 

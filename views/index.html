@@ -79,10 +79,23 @@
     <div id="chat-panel">
         <ul id="messages"></ul>
 
+        <!--
         <form id="form" action="">
             <input id="input" autocomplete="off" /><button id="send-btn">Send</button>
         </form>
         <input id="select-file-input" type="file">
+        -->
+
+        <form id="form" action="" class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="file" id="select-file-input" aria-label="Checkbox for following text input">
+                </div>
+            </div>
+            <input id="input" type="text" class="form-control" aria-label="Text input with checkbox">
+            <button id="send-btn">Send</button>
+        </form>
+
     </div>
 
 </div>
@@ -92,7 +105,7 @@
 <template id="user-video-template">
     <div class="user-vid">
         <!--<video></video>-->
-        <img src="../img/extra/micro_off.svg" alt="user" style="position: absolute; width: 30px; display: none">
+        <img src="../img/extra/micro_off.svg" alt="user" style="position: absolute; width: 30px; margin-top: 10px; display: none">
         <div style="display: none">
             <img src="../img/user/user.svg" alt="user">
         </div>

@@ -29,9 +29,10 @@ const sendFileSlice = (progress, slice) => {
 }
 
 const sendRequestedFileSlice = (data) => {
-    let place = data * 100000,
+    let place = data.currentSlice * 100000,
         slice = tempFile.slice(place, place + Math.min(100000, tempFile.size - place)),
         progress = Math.round(place / tempFile.size * 100);
+    console.log(data)
     sendFileSlice(progress, slice);
 }
 

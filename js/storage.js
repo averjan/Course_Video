@@ -130,10 +130,12 @@ let Storage = function () {
 
         //save the data
         files[data.name].data.push(data.data);
+        console.log('data ' + data.data.length)
         files[data.name].slice++;
     }
 
     this.fileIsComplete = (name) => {
+        console.log(files[name].size)
         let result = files[name].slice * 100000 >= files[name].size;
         if (result) console.log(files);
         return result;
@@ -156,6 +158,7 @@ let Storage = function () {
             name: finalName
         };
         // console.log(path);
+        console.log(fileBuffer.length)
         fs.writeFile(path, fileBuffer, {flag: 'w'}, (err) => {
             delete files[name];
             if (err) {

@@ -8,6 +8,14 @@ function openForm() {
 
 document.getElementById("select-file-input").addEventListener('change', (event) => {
     file = event.target.files[0];
+    /*
+    if (file) {
+        document.getElementById("select-file-input").value = '';
+        shareFile(file)
+        file = null
+    }
+
+     */
 })
 
 document.getElementById("send-btn").addEventListener('click', (event) =>{
