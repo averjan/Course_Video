@@ -29,14 +29,10 @@ ioClient.on('connect', socket => {
     ioClient.send('room')
 })
 
-navigator.mediaDevices.getUserMedia({
-    video:true,
-    audio:true
-}).then((stream)=>{
+function workWithStream(stream) {
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
-    socket.emit('synchronizeScreen', roomID)
     addVideo(myvideo , stream, 'self');
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
@@ -61,13 +57,40 @@ navigator.mediaDevices.getUserMedia({
             call.answer(capturedStream)
         }
     })
+}
+
+async function getMedia() {
+    let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    if (typeof stream == 'undefined' || stream == null) {
+        stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+    }
+
+    if (typeof stream == 'undefined' || stream == null) {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    }
+
+    return stream
+}
+
+
+navigator.mediaDevices.getUserMedia({
+    video:true,
+    audio:true
+}).then((stream)=>{
+    workWithStream(stream)
 }).catch(err=>{
-    alert("two")
-    alert(err.message)
+    navigator.mediaDevices.getUserMedia({
+        video:false,
+        audio:true
+    }).then((stream)=>{
+        workWithStream(stream)
+    }).catch(err=>{
+        // TODO: work with client when no stream
+    })
 })
 
+
 peer.on('open' , (id)=>{
-    //alert("nol")
     myId = id;
     activeUser.id = id
     socket.emit("newUser" , id , roomID);
@@ -264,12 +287,15 @@ socket.on('userEnableAudio', function(user) {
 
 })
 
-socket.on('userDisableVideo', function(user) {
-
+socket.on('userDisableVideo', function(id) {
+    document.getElementById(id).children[0].style.display = 'block'
+    document.getElementById(id).children[1].style.display = 'none'
 })
 
-socket.on('userEnableVideo', function(user) {
-
+socket.on('userEnableVideo', function(id) {
+    console.log(id)
+    document.getElementById(id).children[1].style.display = 'block'
+    document.getElementById(id).children[0].style.display = 'none'
 })
 
 

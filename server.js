@@ -122,6 +122,8 @@ io.on("connection" , socket => {
         else {
             rooms[room].users.push({ id: id, socket: socket })
         }
+
+        socket.emit('synchronizeScreen', room)
         //socket.to(room).emit('userJoined' , id);
         socket.broadcast.to(room).emit('userJoined' , id);
         console.log("captured screen")
@@ -202,10 +204,10 @@ io.on("connection" , socket => {
         io.to(user.room).emit('userEnableAudio', user.id)
     })
     socket.on("DisableVideo", (user) =>{
-        io.broadcast.to(user.room).emit('userDisableVideo', user.id)
+        socket.broadcast.to(user.room).emit('userDisableVideo', user.id)
     })
     socket.on("EnableVideo", (user) =>{
-        io.broadcast.to(user.room).emit('userEnableAudio', user.id)
+        socket.broadcast.to(user.room).emit('userEnableVideo', user.id)
     })
 })
 
