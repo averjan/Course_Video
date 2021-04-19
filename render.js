@@ -128,7 +128,7 @@ function cancelVideoSources()
     videoCancelShareBtn.hidden = true
     videoSelectBtn.hidden = false
     capturedStream.getTracks()[0].stop()
-    console.log(document.getElementById('vid-main').srcObject)
+    socket.emit('stopCapturing', activeUser.room, activeUser.id)
     mainVidPad.style.height = '0'
     document.getElementById('vid-main-block').style.flexGrow = '0'
     document.getElementById('vid-panel').style.flexGrow = '1'

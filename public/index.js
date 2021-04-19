@@ -105,25 +105,31 @@ socket.on('userDisconnect' , id=>{
 })
 
 socket.on('screenCaptured' , id=>{
-    alert("caputred")
-    console.log(id)
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        // alert(userStream.getTracks().length)
-        // addVideo(vid, userStream);
-        console.log("create")
+        document.getElementById('vid-pad').style.height = '100%'
+        document.getElementById('vid-main-block').style.flexGrow = '1'
+        document.getElementById('vid-panel').style.flexGrow = '0'
+        document.getElementById('control-panel').className = 'disabled-control-panel'
+        document.getElementById('screen-select').disabled = true
         setMainVid(userStream)
     })
     call.on('close' , ()=>{
         vid.remove();
-        console.log("user disconect")
     })
     // peerConnections[id] = call;
-    console.log(call)
+})
+
+socket.on('capturingStopped', () => {
+    document.getElementById('vid-pad').style.height = '0'
+    document.getElementById('vid-main-block').style.flexGrow = '0'
+    document.getElementById('vid-panel').style.flexGrow = '1'
+    document.getElementById('control-panel').className = 'active-control-panel'
+    document.getElementById('screen-select').disabled = false
 })
 
 function addVideo(video , stream, user){

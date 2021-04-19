@@ -154,6 +154,11 @@ io.on("connection" , socket => {
 
     })
 
+    socket.on("stopCapturing", (room, id) => {
+        rooms[room].screen = -1
+        socket.broadcast.to(room).emit('capturingStopped')
+    })
+
     socket.on("getScreen", id=>{
         if (mainScreenUser !== -1) {
             console.log("hi bih")
