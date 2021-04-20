@@ -15,8 +15,10 @@ let myvideo = document.createElement('video');
 let screen_video = document.createElement('video');
 myvideo.muted = true;
 const peerConnections = {}
+
 let capturedStream;
 let capturingScreen = false
+let callScreen
 
 let videoTracks;
 let audioTracks;
@@ -41,6 +43,7 @@ function workWithStream(stream) {
         if ((!capturingScreen)) {
             if (otherStreams.indexOf(call.metadata.id) < 0) {
                 call.answer(myVideoStream);
+                peerConnections[call.metadata.id] = call
                 const vid = document.createElement('video');
                 call.on('stream', userStream => {
                     if (otherStreams.indexOf(call.metadata.id) < 0) {
@@ -50,6 +53,9 @@ function workWithStream(stream) {
                 })
                 call.on('error', (err) => {
                     alert(err)
+                })
+                call.on('close', () => {
+                    document.getElementById(call.metadata.id).remove()
                 })
             }
         }
@@ -120,7 +126,8 @@ function callUser(id) {
         }
     })
     call.on('close' , ()=>{
-        vid.remove();
+        //vid.remove();
+        document.getElementById(id).remove()
     })
 }
 
@@ -138,6 +145,7 @@ socket.on('userDisconnect' , id=>{
 socket.on('screenCaptured' , id=>{
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
+    //callScreen = call
     call.on('error' , (err)=>{
         alert(err);
     })
@@ -150,7 +158,7 @@ socket.on('screenCaptured' , id=>{
         setMainVid(userStream)
     })
     call.on('close' , ()=>{
-        vid.remove();
+        socket.emit('capturingStopped')
     })
     // peerConnections[id] = call;
 })

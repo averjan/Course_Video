@@ -138,6 +138,7 @@ io.on("connection" , socket => {
                 rooms[room] = undefined
             }
 
+            socket.broadcast.to(room).emit('capturingStopped')
             socket.broadcast.to(room).emit('userDisconnect' , id);
         })
     })
