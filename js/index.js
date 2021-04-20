@@ -1,6 +1,8 @@
 const { ipcRenderer } = require('electron')
 //const { UserApp } = require('../public/client/user')
 
+const labelFileName = document.querySelector('#file-upload-div label span')
+
 function openForm() {
     let panel = document.getElementById("chat-panel");
     panel.style.display = (panel.style.display === "flex") ? "none" : "flex"
@@ -8,6 +10,8 @@ function openForm() {
 
 document.getElementById("select-file-input").addEventListener('change', (event) => {
     file = event.target.files[0];
+    let fileName = event.target.value.split( '\\' ).pop();
+    labelFileName.innerHTML = fileName
     /*
     if (file) {
         document.getElementById("select-file-input").value = '';
@@ -20,6 +24,7 @@ document.getElementById("select-file-input").addEventListener('change', (event) 
 
 document.getElementById("send-btn").addEventListener('click', (event) =>{
     document.getElementById("select-file-input").value = '';
+    labelFileName.innerHTML = 'Send file'
     if (file) {
         shareFile(file)
         file = null

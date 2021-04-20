@@ -59,7 +59,7 @@ function workWithStream(stream) {
     })
 }
 
-async function getMedia() {
+async function getMedia2() {
     let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     if (typeof stream == 'undefined' || stream == null) {
         stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
@@ -72,23 +72,41 @@ async function getMedia() {
     return stream
 }
 
+async function getMedia(constraints) {
+    let stream = null;
 
-navigator.mediaDevices.getUserMedia({
-    video:true,
-    audio:true
-}).then((stream)=>{
-    workWithStream(stream)
-}).catch(err=>{
-    navigator.mediaDevices.getUserMedia({
-        video:false,
-        audio:true
-    }).then((stream)=>{
-        workWithStream(stream)
-    }).catch(err=>{
-        // TODO: work with client when no stream
+    stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    }).then((stream) => {
+        return stream
+    }).catch(err => {
+        return null
     })
-})
 
+    console.log(stream)
+    return stream
+}
+
+function getMediaLaunch() {
+    navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    }).then((stream) => {
+        workWithStream(stream)
+    }).catch(err => {
+        navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true
+        }).then((stream) => {
+            workWithStream(stream)
+        }).catch(err => {
+            // TODO: work with client when no stream
+        })
+    })
+}
+
+getMediaLaunch()
 
 peer.on('open' , (id)=>{
     myId = id;
@@ -241,20 +259,43 @@ function shutDownOtherVideo(userID) {
     socket.emit("shutDownUserVideo", userID, activeUser.room)
 }
 
-function shutDownSelfVideo() {
-    if (videoTracks[0].enabled) {
-        videoTracks[0].enabled = false
-        socket.emit("DisableVideo", activeUser)
+let tempTrack
+async function shutDownSelfVideo() {
+    //if (videoTracks[0].enabled) {
+    myvideo = document.getElementById('self')
+    if (videoTracks[0].readyState === 'live') {
+        //videoTracks[0].enabled = false
         document.getElementById("video-stream-control").className = 'btn btn-danger'
-        document.getElementById('self').children[1].style.display = 'none'
-        document.getElementById('self').children[0].style.display = 'block'
+        document.getElementById('self').children[2].style.display = 'none'
+        document.getElementById('self').children[1].style.display = 'block'
+
+        videoTracks[0].stop()
+        let stream = await getMedia({ video: false, audio: true })
+        if (stream != null) {
+            myVideoStream = stream
+            audioTracks = myVideoStream.getAudioTracks()
+            myvideo.src = myVideoStream
+        }
+
+        socket.emit("DisableVideo", activeUser)
     }
     else {
-        videoTracks[0].enabled = true
+        //videoTracks[0].enabled = true
+        let stream = await getMedia({ video: true, audio: true })
+        if (stream != null) {
+            myVideoStream = stream
+            videoTracks = myVideoStream.getVideoTracks()
+            audioTracks = myVideoStream.getAudioTracks()
+            myvideo.src = myVideoStream
+            myvideo.load()
+            myvideo.play()
+        }
+
+        console.log(myVideoStream)
         socket.emit("EnableVideo", activeUser)
         document.getElementById("video-stream-control").className = 'btn btn-success'
-        document.getElementById('self').children[0].style.display = 'none'
-        document.getElementById('self').children[1].style.display = 'block'
+        document.getElementById('self').children[1].style.display = 'none'
+        document.getElementById('self').children[2].style.display = 'block'
     }
 }
 
@@ -288,14 +329,14 @@ socket.on('userEnableAudio', function(id) {
 })
 
 socket.on('userDisableVideo', function(id) {
-    document.getElementById(id).children[0].style.display = 'block'
-    document.getElementById(id).children[1].style.display = 'none'
+    document.getElementById(id).children[1].style.display = 'block'
+    document.getElementById(id).children[2].style.display = 'none'
 })
 
 socket.on('userEnableVideo', function(id) {
     console.log(id)
-    document.getElementById(id).children[1].style.display = 'block'
-    document.getElementById(id).children[0].style.display = 'none'
+    document.getElementById(id).children[2].style.display = 'block'
+    document.getElementById(id).children[1].style.display = 'none'
 })
 
 
