@@ -59,19 +59,6 @@ function workWithStream(stream) {
     })
 }
 
-async function getMedia2() {
-    let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    if (typeof stream == 'undefined' || stream == null) {
-        stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
-    }
-
-    if (typeof stream == 'undefined' || stream == null) {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    }
-
-    return stream
-}
-
 async function getMedia(constraints) {
     let stream = null;
 
@@ -118,8 +105,7 @@ peer.on('error' , (err)=>{
     alert(err.type);
 });
 
-socket.on('userJoined' , id => {
-    alert("new")
+function callUser(id) {
     const call  = peer.call(id , myVideoStream, {metadata: {id: activeUser.id }});
     peerConnections[id] = call;
     let count_connect = 0;
@@ -135,8 +121,12 @@ socket.on('userJoined' , id => {
     })
     call.on('close' , ()=>{
         vid.remove();
-        console.log("user disconect")
     })
+}
+
+socket.on('userJoined' , id => {
+    alert("new")
+    callUser(id)
 })
 
 socket.on('userDisconnect' , id=>{
@@ -173,8 +163,19 @@ socket.on('capturingStopped', () => {
     document.getElementById('screen-select').disabled = false
 })
 
-function addVideo(video , stream, user){
+function setVideo(stream, user) {
+    let video = document.querySelector('#' + user + ' video')
+    console.log('set')
     console.log(stream)
+    video.srcObject = stream;
+}
+
+function addVideo(video , stream, user){
+    if (document.getElementById(user)) {
+        setVideo(stream, user)
+        return
+    }
+
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()
@@ -261,37 +262,30 @@ function shutDownOtherVideo(userID) {
 
 let tempTrack
 async function shutDownSelfVideo() {
-    //if (videoTracks[0].enabled) {
-    myvideo = document.getElementById('self')
-    if (videoTracks[0].readyState === 'live') {
-        //videoTracks[0].enabled = false
+    if (videoTracks[0].enabled) {
+    //myvideo = document.querySelector('#self video')
+    //if (videoTracks[0].readyState === 'live') {
+        videoTracks[0].enabled = false
         document.getElementById("video-stream-control").className = 'btn btn-danger'
         document.getElementById('self').children[2].style.display = 'none'
         document.getElementById('self').children[1].style.display = 'block'
 
-        videoTracks[0].stop()
-        let stream = await getMedia({ video: false, audio: true })
-        if (stream != null) {
-            myVideoStream = stream
-            audioTracks = myVideoStream.getAudioTracks()
-            myvideo.src = myVideoStream
-        }
-
+        //videoTracks[0].stop()
         socket.emit("DisableVideo", activeUser)
     }
     else {
-        //videoTracks[0].enabled = true
+        videoTracks[0].enabled = true
+        /*
         let stream = await getMedia({ video: true, audio: true })
         if (stream != null) {
             myVideoStream = stream
             videoTracks = myVideoStream.getVideoTracks()
             audioTracks = myVideoStream.getAudioTracks()
-            myvideo.src = myVideoStream
-            myvideo.load()
-            myvideo.play()
+            console.log(myvideo)
+            myvideo.srcObject = myVideoStream
         }
+        */
 
-        console.log(myVideoStream)
         socket.emit("EnableVideo", activeUser)
         document.getElementById("video-stream-control").className = 'btn btn-success'
         document.getElementById('self').children[1].style.display = 'none'
@@ -334,7 +328,7 @@ socket.on('userDisableVideo', function(id) {
 })
 
 socket.on('userEnableVideo', function(id) {
-    console.log(id)
+    callUser(id)
     document.getElementById(id).children[2].style.display = 'block'
     document.getElementById(id).children[1].style.display = 'none'
 })
