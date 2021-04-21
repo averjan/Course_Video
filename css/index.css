@@ -71,6 +71,8 @@ button {
     /*position: absolute;*/
     height: 100%;
     flex-direction: column;
+    border: 1px solid lightgrey;
+    border-top: 0;
 
     z-index: 1;
 }
@@ -178,8 +180,8 @@ button {
     border: 2px solid white;
 }
 
-#form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; /*position: fixed;*/ width: 100%; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem 0 0 2rem; /*margin: 0.25rem;*/ }
+#form { /*background: rgba(0, 0, 0, 0.15);*/ padding: 0.25rem; /*position: fixed;*/ width: 100%; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem 0 0 2rem; background-color: #f1f1f4/*margin: 0.25rem;*/ }
 #input:focus { outline: none; }
 /*
 #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
@@ -254,19 +256,30 @@ button {
     cursor: pointer;
 }
 
+#file-upload-div {
+    display: flex;
+    align-items: center;
+}
 #file-upload-div label {
-    background-color: #0d6efd;
+    /*background-color: #0d6efd;*/
+    background-color: #f1f1f4;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     color: #f1e5e6;
 
-    max-width: 80%;
+    /*max-width: 80%;*/
     font-size: 1.25rem;
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
-    display: inline-block;
+    /*display: inline-block;*/
     overflow: hidden;
-    padding: 0.625rem 1.25rem;
+    /*padding: 0.625rem 1.25rem;*/
 }
 
 .user-vid {

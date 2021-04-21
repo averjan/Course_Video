@@ -1,17 +1,25 @@
 const { ipcRenderer } = require('electron')
 //const { UserApp } = require('../public/client/user')
 
-const labelFileName = document.querySelector('#file-upload-div label span')
+const labelFileName = document.querySelector('#file-upload-div div span')
+const cancelFileBtn = document.querySelector('#cancel-file-btn')
 
 function openForm() {
     let panel = document.getElementById("chat-panel");
     panel.style.display = (panel.style.display === "flex") ? "none" : "flex"
 }
 
+cancelFileBtn.addEventListener('click', (e) => {
+    document.getElementById("select-file-input").value = '';
+    labelFileName.innerHTML = ''
+    cancelFileBtn.style.display = 'none'
+})
+
 document.getElementById("select-file-input").addEventListener('change', (event) => {
     file = event.target.files[0];
     let fileName = event.target.value.split( '\\' ).pop();
     labelFileName.innerHTML = fileName
+    cancelFileBtn.style.display = 'block'
     /*
     if (file) {
         document.getElementById("select-file-input").value = '';
@@ -24,7 +32,8 @@ document.getElementById("select-file-input").addEventListener('change', (event) 
 
 document.getElementById("send-btn").addEventListener('click', (event) =>{
     document.getElementById("select-file-input").value = '';
-    labelFileName.innerHTML = 'Send file'
+    labelFileName.innerHTML = ''
+    cancelFileBtn.style.display = 'none'
     if (file) {
         shareFile(file)
         file = null
