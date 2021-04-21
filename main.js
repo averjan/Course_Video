@@ -21,6 +21,32 @@ function createWindow () {
     defaultWindow = win
     win.loadFile('views/index.html')
     //win.loadURL('http://localhost:4000/room')
+
+    win.webContents.session.on('will-download', (event, item, webContents) => {
+        // Установите путь сохранения, чтобы Electron не отображал диалоговое окно сохранения.
+        item.setSavePath(app.getAppPath() + '\\tmp\\' + item.getFilename())
+
+        item.on('updated', (event, state) => {
+            if (state === 'interrupted') {
+                console.log('Download is interrupted but can be resumed')
+            } else if (state === 'progressing') {
+                if (item.isPaused()) {
+                    console.log('Download is paused')
+                } else {
+                    console.log(`Received bytes: ${item.getReceivedBytes()}`)
+                }
+            }
+        })
+
+        item.once('done', (event, state) => {
+            if (state === 'completed') {
+                console.log('Download successfully')
+            } else {
+                console.log(`Download failed: ${state}`)
+            }
+        })
+    })
+
 }
 
 app.whenReady().then(() => {
