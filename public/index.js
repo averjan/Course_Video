@@ -344,7 +344,7 @@ socket.on('userEnableVideo', function(id) {
 
 ////////// UPLOADING
 const uploadFileSlice = (slice) => {
-    socket.emit("client-send-file-slice", myId, slice, roomID)
+    socket.emit("client-send-file-slice", activeUser, slice)
 }
 
 socket.on("SERVER_REQUEST_FILE_SLICE", function (slice) {
@@ -380,6 +380,8 @@ $(function() {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+
+                URL.revokeObjectURL(link.href)
             }
         })
     }

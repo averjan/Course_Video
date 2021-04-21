@@ -114,6 +114,24 @@
 
 </div>
 
+<template id="message-file-item">
+    <li class="container">
+        <div>
+            <img onclick="openFile(this)" src="../img/file/file.svg" alt="open: " style="width: 30px; display: none; cursor: pointer; ">
+            <img onclick="invokeDownload(this)" src="../img/file/getFile.svg" alt="download: " style="width: 30px; cursor: pointer; ">
+            <p class="file-name"></p>
+        </div>
+
+        <span class="time time-right"></span>
+        <span class="username username-left"></span>
+        <script>
+            function invokeDownload(e) {
+                let txt = e.parentElement.parentElement.querySelector('.file-name')
+                txt.click()
+            }
+        </script>
+    </li>
+</template>
 
 <template id="message-item">
     <li class="container">

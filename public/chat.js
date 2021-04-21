@@ -1,6 +1,7 @@
 // const socket = io('http://localhost:4000');
 const md5 = require('../node_modules/md5/md5.js')
 const { Message } = require('../js/message')
+const { FileMessage } = require('../js/file_message')
 
 let messages = document.getElementById('messages')
 let form = document.getElementById("form")
@@ -34,6 +35,11 @@ function appendFileToChat(file) {
     let fileContainerID = md5(filePath)
     filePathMap[fileContainerID] = filePath
 
+    let item = new FileMessage(file.file, file.user, fileContainerID)
+    if (file.user.id === activeUser.id) {
+        item.makeDark()
+    }
+    /*
     let item = document.createElement('li')
     let fileReference = document.createElement('a')
     //fileReference.appendChild(document.createTextNode(file.file.name))
@@ -44,7 +50,8 @@ function appendFileToChat(file) {
         downloadFile(e.target, e.target.id)
     })
     item.appendChild(fileReference)
-    messages.appendChild(item)
+    */
+    messages.appendChild(item.item)
 }
 
 function downloadFile(file, id) {

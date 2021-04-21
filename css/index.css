@@ -260,6 +260,10 @@ button {
     display: flex;
     align-items: center;
 }
+#file-upload-div label:hover {
+    background-color: lightgrey;
+}
+
 #file-upload-div label {
     /*background-color: #0d6efd;*/
     background-color: #f1f1f4;

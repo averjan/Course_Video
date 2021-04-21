@@ -173,9 +173,9 @@ io.on("connection" , socket => {
         io.to(user.room).emit('chat message', msg, user)
     })
 
-    socket.on('client-send-file-slice', (id, slice, room) =>{
+    socket.on('client-send-file-slice', (user, slice) =>{
         console.log("start file")
-        storeFileSlice(socket, id, slice, room);
+        storeFileSlice(socket, user, slice, user.room);
     })
 
 
@@ -222,7 +222,7 @@ function storeFileSlice(socket, user, data, room) {
             socket.emit('SERVER_FINISH_RECEIVE_FILE');
             //socket.broadcast.to(room).emit('CHAT_FILE', {
             io.to(room).emit('CHAT_FILE', {
-                user: user.name,
+                user: user,
                 file: {
                     name: res.alias,
                     size: res.size,
