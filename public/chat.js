@@ -18,7 +18,12 @@ socket.on('chat message', function(msg, user) {
     let item = document.createElement('li')
     let chat = document.getElementById('chat-div')
     let m = new Message(msg, user)
-    item.textContent = msg
+    if (user.id == activeUser.id) {
+        m.time().className = 'time time-left'
+        m.username().className = 'username username-right'
+        m.message().className += ' darker'
+    }
+
     messages.appendChild(m.item)
     chat.scrollTop = chat.scrollHeight
     //window.scrollTo(0, document.body.scrollHeight)
