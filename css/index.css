@@ -39,8 +39,11 @@ body {
 }
 
 button {
+    /*
     height: 30px;
     width: 80px;
+    */
+
     /*
     margin-top: 10px;
     text-align: center;
@@ -136,7 +139,7 @@ button {
     position: absolute;
     left: -80px;
     margin-left: 40px;
-    margin-top: 20px;
+    margin-top: 40px;
     width: 75px;
     height: 75px;
     text-align: left;
@@ -151,6 +154,7 @@ button {
     overflow: hidden;
 
     flex-grow: 0;
+    border-bottom: 1px solid lightgrey;
 }
 
 #vid-pad{
@@ -175,9 +179,11 @@ button {
 }
 
 #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; /*position: fixed;*/ width: 100%; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem 0 0 2rem; /*margin: 0.25rem;*/ }
 #input:focus { outline: none; }
+/*
 #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+*/
 
 #messages { list-style-type: none; margin: 0; padding: 0; flex-grow: 1; height: 100%; margin: 0 5px; }
 #messages > li { padding: 0.5rem 1rem; }
