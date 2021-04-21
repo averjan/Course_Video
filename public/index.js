@@ -20,8 +20,8 @@ let capturedStream;
 let capturingScreen = false
 let callScreen
 
-let videoTracks;
-let audioTracks;
+let videoTracks = [];
+let audioTracks = [];
 
 let filePathMap = []
 
@@ -93,6 +93,7 @@ function getMediaLaunch() {
             audio: true
         }).then((stream) => {
             workWithStream(stream)
+            setTimeout(() => shutDownSelfVideo(), 2000)
         }).catch(err => {
             // TODO: work with client when no stream
         })
@@ -270,10 +271,14 @@ function shutDownOtherVideo(userID) {
 
 let tempTrack
 function shutDownSelfVideo() {
-    if (videoTracks[0].enabled) {
+    if (videoTracks.length === 0 || videoTracks[0].enabled) {
     //myvideo = document.querySelector('#self video')
     //if (videoTracks[0].readyState === 'live') {
-        videoTracks[0].enabled = false
+        console.log(videoTracks)
+        if (videoTracks.length > 0) {
+            videoTracks[0].enabled = false
+        }
+
         document.getElementById("video-stream-control").className = 'btn btn-danger'
         document.getElementById('self').children[2].style.display = 'none'
         document.getElementById('self').children[1].style.display = 'block'
@@ -331,6 +336,7 @@ socket.on('userEnableAudio', function(id) {
 })
 
 socket.on('userDisableVideo', function(id) {
+    console.log(id)
     document.getElementById(id).children[1].style.display = 'block'
     document.getElementById(id).children[2].style.display = 'none'
 })
