@@ -35,27 +35,27 @@ function workWithStream(stream) {
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
-    addVideo(myvideo , stream, 'self');
+    addVideo(myvideo , stream, activeUser);
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
         // alert(capturingScreen)
         // alert(call.metadata.id)
         if ((!capturingScreen)) {
-            if (otherStreams.indexOf(call.metadata.id) < 0) {
+            if (otherStreams.indexOf(call.metadata.user.id) < 0) {
                 call.answer(myVideoStream);
-                peerConnections[call.metadata.id] = call
+                peerConnections[call.metadata.user.id] = call
                 const vid = document.createElement('video');
                 call.on('stream', userStream => {
-                    if (otherStreams.indexOf(call.metadata.id) < 0) {
-                        addVideo(vid, userStream, call.metadata.id);
-                        otherStreams.push(call.metadata.id)
+                    if (otherStreams.indexOf(call.metadata.user.id) < 0) {
+                        addVideo(vid, userStream, call.metadata.user);
+                        otherStreams.push(call.metadata.user.id)
                     }
                 })
                 call.on('error', (err) => {
                     alert(err)
                 })
                 call.on('close', () => {
-                    document.getElementById(call.metadata.id).remove()
+                    document.getElementById(call.metadata.user.id).remove()
                 })
             }
         }
@@ -93,7 +93,7 @@ function getMediaLaunch() {
             audio: true
         }).then((stream) => {
             workWithStream(stream)
-            setTimeout(() => shutDownSelfVideo(), 2000)
+            setTimeout(() => shutDownSelfVideo(), 4000)
         }).catch(err => {
             // TODO: work with client when no stream
         })
@@ -105,16 +105,16 @@ getMediaLaunch()
 peer.on('open' , (id)=>{
     myId = id;
     activeUser.id = id
-    socket.emit("newUser" , id , roomID);
+    socket.emit("newUser" , activeUser);
 })
 
 peer.on('error' , (err)=>{
     alert(err.type);
 });
 
-function callUser(id) {
-    const call  = peer.call(id , myVideoStream, {metadata: {id: activeUser.id }});
-    peerConnections[id] = call;
+function callUser(user) {
+    const call  = peer.call(user.id , myVideoStream, {metadata: {user: activeUser }});
+    peerConnections[user.id] = call;
     let count_connect = 0;
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
@@ -122,19 +122,19 @@ function callUser(id) {
     })
     call.on('stream' , userStream=>{
         if (count_connect === 0) {
-            addVideo(vid, userStream, id);
+            addVideo(vid, userStream, user);
             count_connect++
         }
     })
     call.on('close' , ()=>{
         //vid.remove();
-        document.getElementById(id).remove()
+        document.getElementById(user.id).remove()
     })
 }
 
-socket.on('userJoined' , id => {
+socket.on('userJoined' , user => {
     alert("new")
-    callUser(id)
+    callUser(user)
 })
 
 socket.on('userDisconnect' , id=>{
@@ -180,8 +180,8 @@ function setVideo(stream, user) {
 }
 
 function addVideo(video , stream, user){
-    if (document.getElementById(user)) {
-        setVideo(stream, user)
+    if (document.getElementById(user.id)) {
+        setVideo(stream, user.id)
         return
     }
 
@@ -192,7 +192,8 @@ function addVideo(video , stream, user){
 
     let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
     gridElement.children[0].appendChild(video)
-    gridElement.children[0].id = user
+    gridElement.children[0].id = user.id
+    gridElement.querySelector('.vid-username').innerHTML = user.name
     videoGrid.appendChild(gridElement.children[0])
     //videoGrid.append(video);
 }
@@ -280,8 +281,8 @@ function shutDownSelfVideo() {
         }
 
         document.getElementById("video-stream-control").className = 'btn btn-danger'
-        document.getElementById('self').children[2].style.display = 'none'
-        document.getElementById('self').children[1].style.display = 'block'
+        document.getElementById(activeUser.id).children[3].style.display = 'none'
+        document.getElementById(activeUser.id).children[1].style.display = 'block'
 
         //videoTracks[0].stop()
         socket.emit("DisableVideo", activeUser)
@@ -301,8 +302,8 @@ function shutDownSelfVideo() {
 
         socket.emit("EnableVideo", activeUser)
         document.getElementById("video-stream-control").className = 'btn btn-success'
-        document.getElementById('self').children[1].style.display = 'none'
-        document.getElementById('self').children[2].style.display = 'block'
+        document.getElementById(activeUser.id).children[1].style.display = 'none'
+        document.getElementById(activeUser.id).children[3].style.display = 'block'
     }
 }
 
@@ -338,12 +339,12 @@ socket.on('userEnableAudio', function(id) {
 socket.on('userDisableVideo', function(id) {
     console.log(id)
     document.getElementById(id).children[1].style.display = 'block'
-    document.getElementById(id).children[2].style.display = 'none'
+    document.getElementById(id).children[3].style.display = 'none'
 })
 
 socket.on('userEnableVideo', function(id) {
     callUser(id)
-    document.getElementById(id).children[2].style.display = 'block'
+    document.getElementById(id).children[3].style.display = 'block'
     document.getElementById(id).children[1].style.display = 'none'
 })
 

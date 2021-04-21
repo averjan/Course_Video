@@ -113,19 +113,21 @@ app.get('/checkRoom/:id', function(req, res, next) {
 })
 
 io.on("connection" , socket => {
-    socket.on('newUser' , (id , room)=>{
-        socket.join(room);
+    socket.on('newUser' , (user)=>{
+        let id = user.id
+        let room = user.room
+        socket.join(user.room);
         //rooms.push({ name: room, screen: -1, users: [id] })
-        if (typeof rooms[room] == 'undefined') {
-            rooms[room] = { screen: -1, users: [{ id: id, socket: socket }]}
+        if (typeof rooms[user.room] == 'undefined') {
+            rooms[user.room] = { screen: -1, users: [{ id: user.id, socket: socket }]}
         }
         else {
-            rooms[room].users.push({ id: id, socket: socket })
+            rooms[user.room].users.push({ id: user.id, socket: socket })
         }
 
-        socket.emit('synchronizeScreen', room)
+        socket.emit('synchronizeScreen', user.room)
         //socket.to(room).emit('userJoined' , id);
-        socket.broadcast.to(room).emit('userJoined' , id);
+        socket.broadcast.to(user.room).emit('userJoined' , user);
         console.log("captured screen")
 
         socket.on('disconnect' , ()=>{

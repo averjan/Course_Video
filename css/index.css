@@ -60,7 +60,18 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border: 2px solid white;
+    /*border: 2px solid white;*/
+}
+
+.vid-username {
+    position: absolute;
+    bottom: 0;
+    background-color: black;
+    width: 100%;
+    color: white;
+    opacity: 0.5;
+    text-align: center;
+    margin-bottom: 0;
 }
 
 #chat-panel {
