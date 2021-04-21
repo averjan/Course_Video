@@ -88,6 +88,12 @@ function changeVideoState(e) {
     }
 }
 
+function switchFileIcoToComplete(fileID) {
+    let txt = document.getElementById(fileID)
+    txt.parentElement.getElementsByClassName('open-ico')[0].style.display = 'block'
+    txt.parentElement.getElementsByClassName('download-ico')[0].style.display = 'none'
+}
+
 document.getElementById("video-stream-control").onclick = function(event){
     shutDownSelfVideo()
 }

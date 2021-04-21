@@ -2,6 +2,16 @@
 //const md5 = require("uuid/dist/esm-browser/md5");
 // const md5 = require('../node_modules/md5/md5.js')
 
+const { getCommandLine } = require('../utils')
+const exec = require('child_process').exec
+const path = require('path')
+
+function openFile(e) {
+    let fileName = e.parentElement.getElementsByClassName('file-name')[0].textContent
+    let filePath = path.resolve('./tmp/' + fileName)
+    exec(getCommandLine() + ' ' + filePath)
+}
+
 const shareFile = (file) => {
     if (file){
         uploading = true
@@ -39,3 +49,5 @@ const sendRequestedFileSlice = (data) => {
 const setUserAudio = (status, user) => {
 
 }
+
+
