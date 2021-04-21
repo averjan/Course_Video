@@ -67,7 +67,7 @@ button {
     display: none;
     right: 0;
     width: 300px;
-    background-color: grey;
+    /*background-color: grey;*/
     /*position: absolute;*/
     height: 100%;
     flex-direction: column;
@@ -209,11 +209,12 @@ button {
 ::-webkit-scrollbar {
     background: transparent;
     overflow: visible;
-    width: 10px;
+    width: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2rem;
     /*border: solid #fff;*/
 }
 
