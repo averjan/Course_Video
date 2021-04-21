@@ -1,5 +1,6 @@
 // const socket = io('http://localhost:4000');
 const md5 = require('../node_modules/md5/md5.js')
+const { Message } = require('../js/message')
 
 let messages = document.getElementById('messages')
 let form = document.getElementById("form")
@@ -8,16 +9,19 @@ let input = document.getElementById("input")
 form.addEventListener('submit', function (e) {
     e.preventDefault()
     if (input.value) {
-        socket.emit('chat message', input.value, roomID)
+        socket.emit('chat message', input.value, activeUser)
         input.value = ''
     }
 })
 
-socket.on('chat message', function(msg) {
+socket.on('chat message', function(msg, user) {
     let item = document.createElement('li')
+    let chat = document.getElementById('chat-div')
+    let m = new Message(msg, user)
     item.textContent = msg
-    messages.appendChild(item)
-    window.scrollTo(0, document.body.scrollHeight)
+    messages.appendChild(m.item)
+    chat.scrollTop = chat.scrollHeight
+    //window.scrollTo(0, document.body.scrollHeight)
 })
 
 function appendFileToChat(file) {

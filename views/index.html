@@ -77,7 +77,7 @@
     <button id="chat-btn" class="rounded-circle btn btn-primary font-weight-bold" type="button" onclick="openForm()"><</button>
 
     <div id="chat-panel">
-        <div style="overflow: auto; height: 100%;">
+        <div id="chat-div" style="overflow: auto; height: 100%;">
             <ul id="messages"></ul>
         </div>
 
@@ -110,6 +110,13 @@
 </div>
 
 
+<template id="message-item">
+    <li class="container">
+        <p></p>
+        <span class="time-right"></span>
+        <span class="username-left"></span>
+    </li>
+</template>
 
 <template id="user-video-template">
     <div class="user-vid">

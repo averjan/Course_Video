@@ -269,7 +269,7 @@ function shutDownOtherVideo(userID) {
 }
 
 let tempTrack
-async function shutDownSelfVideo() {
+function shutDownSelfVideo() {
     if (videoTracks[0].enabled) {
     //myvideo = document.querySelector('#self video')
     //if (videoTracks[0].readyState === 'live') {

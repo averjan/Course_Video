@@ -169,8 +169,8 @@ io.on("connection" , socket => {
         }
     })
 
-    socket.on('chat message', (msg, room) =>{
-        io.to(room).emit('chat message', msg)
+    socket.on('chat message', (msg, user) =>{
+        io.to(user.room).emit('chat message', msg, user)
     })
 
     socket.on('client-send-file-slice', (id, slice, room) =>{
