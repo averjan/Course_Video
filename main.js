@@ -17,9 +17,9 @@ function createWindow () {
         }
     })
 
-    //win.loadFile('views/login.html')
+    win.loadFile('views/login.html')
     defaultWindow = win
-    win.loadFile('views/index.html')
+    //win.loadFile('views/index.html')
     //win.loadURL('http://localhost:4000/room')
 
     win.webContents.session.on('will-download', (event, item, webContents) => {
@@ -78,5 +78,5 @@ ipcMain.on("changeRoom", (event, roomID, userName, userMail, role) => {
 
 ipcMain.on("sendRoomId", (event) => {
     console.log(userData)
-    //event.reply("getRoomId", userData)
+    event.reply("getRoomId", userData)
 })

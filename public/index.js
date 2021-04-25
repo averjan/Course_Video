@@ -36,6 +36,7 @@ function workWithStream(stream) {
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
     audioTracks = stream.getAudioTracks();
+    activeUser.id = peer.id
     addVideo(myvideo , stream, activeUser);
     peer.on('call' , call =>{
         //  || (peerConnections.indexOf(call) > -1)
@@ -203,13 +204,15 @@ function addVideo(video , stream, user){
         return
     }
 
+    let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
+    //video = gridElement.querySelector('video')
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
 
-    let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
-    gridElement.children[0].appendChild(video)
+    gridElement.querySelector('.user-vid').replaceChild(video, gridElement.querySelector('video'))
+    //gridElement.children[0].appendChild(video)
     gridElement.children[0].id = user.id
     gridElement.querySelector('.vid-username').innerHTML = user.name
     videoGrid.appendChild(gridElement.children[0])
