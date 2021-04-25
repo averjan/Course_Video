@@ -6,7 +6,7 @@ const peer = new Peer();
 const $ = require('jquery')
 
 // let roomID = "room"
-let myVideoStream;
+let myVideoStream = null;
 let myId;
 let otherStreams = [];
 
@@ -15,6 +15,7 @@ let myvideo = document.createElement('video');
 let screen_video = document.createElement('video');
 myvideo.muted = true;
 const peerConnections = {}
+const usersVideo = []
 
 let capturedStream;
 let capturingScreen = false
@@ -43,6 +44,7 @@ function workWithStream(stream) {
         if ((!capturingScreen)) {
             if (otherStreams.indexOf(call.metadata.user.id) < 0) {
                 call.answer(myVideoStream);
+                console.log('answer')
                 peerConnections[call.metadata.user.id] = call
                 const vid = document.createElement('video');
                 call.on('stream', userStream => {
@@ -60,9 +62,13 @@ function workWithStream(stream) {
             }
         }
         else {
+            console.log('answer screen')
+            console.log(capturedStream)
             call.answer(capturedStream)
         }
     })
+
+    emitNewUser()
 }
 
 async function getMedia(constraints) {
@@ -77,7 +83,6 @@ async function getMedia(constraints) {
         return null
     })
 
-    console.log(stream)
     return stream
 }
 
@@ -88,12 +93,13 @@ function getMediaLaunch() {
     }).then((stream) => {
         workWithStream(stream)
     }).catch(err => {
+        console.log(err)
         navigator.mediaDevices.getUserMedia({
             video: false,
             audio: true
         }).then((stream) => {
             workWithStream(stream)
-            setTimeout(() => shutDownSelfVideo(), 4000)
+            //setTimeout(() => shutDownSelfVideo(), 4000)
         }).catch(err => {
             // TODO: work with client when no stream
         })
@@ -102,11 +108,20 @@ function getMediaLaunch() {
 
 getMediaLaunch()
 
-peer.on('open' , (id)=>{
+const emitNewUser = () => {
+    let id = peer.id
     myId = id;
     activeUser.id = id
-    socket.emit("newUser" , activeUser);
-})
+    socket.emit("newUser", activeUser);
+}
+
+const setPeerOpen = () => {
+    peer.on('open', (id) => {
+        myId = id;
+        activeUser.id = id
+        socket.emit("newUser", activeUser);
+    })
+}
 
 peer.on('error' , (err)=>{
     alert(err.type);
@@ -114,26 +129,28 @@ peer.on('error' , (err)=>{
 
 function callUser(user) {
     const call  = peer.call(user.id , myVideoStream, {metadata: {user: activeUser }});
-    peerConnections[user.id] = call;
-    let count_connect = 0;
     const vid = document.createElement('video');
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
-        if (count_connect === 0) {
+        console.log('stream1')
+        if (!usersVideo[user.id]) {
             addVideo(vid, userStream, user);
-            count_connect++
+            usersVideo[user.id] = true
         }
     })
     call.on('close' , ()=>{
         //vid.remove();
         document.getElementById(user.id).remove()
     })
+
+    peerConnections[user.id] = call;
 }
 
 socket.on('userJoined' , user => {
-    alert("new")
+    //alert("new")
+    console.log("new")
     callUser(user)
 })
 
@@ -144,13 +161,16 @@ socket.on('userDisconnect' , id=>{
 })
 
 socket.on('screenCaptured' , id=>{
+    console.log(myVideoStream)
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
+    console.log(call)
     //callScreen = call
     call.on('error' , (err)=>{
         alert(err);
     })
     call.on('stream' , userStream=>{
+        console.log('captured')
         document.getElementById('vid-pad').style.height = '100%'
         document.getElementById('vid-main-block').style.flexGrow = '1'
         document.getElementById('vid-panel').style.flexGrow = '0'
