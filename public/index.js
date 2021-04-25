@@ -66,6 +66,7 @@ function workWithStream(stream) {
     })
 
     emitNewUser()
+    socket.emit('synchronizeScreen', activeUser.room)
 }
 
 async function getMedia(constraints) {
@@ -96,7 +97,7 @@ function getMediaLaunch() {
             audio: true
         }).then((stream) => {
             workWithStream(stream)
-            //setTimeout(() => shutDownSelfVideo(), 4000)
+            setTimeout(() => shutDownSelfVideo(), 4000)
         }).catch(err => {
             // TODO: work with client when no stream
         })
