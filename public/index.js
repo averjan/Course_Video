@@ -44,7 +44,6 @@ function workWithStream(stream) {
         if ((!capturingScreen)) {
             if (otherStreams.indexOf(call.metadata.user.id) < 0) {
                 call.answer(myVideoStream);
-                console.log('answer')
                 peerConnections[call.metadata.user.id] = call
                 const vid = document.createElement('video');
                 call.on('stream', userStream => {
@@ -62,8 +61,6 @@ function workWithStream(stream) {
             }
         }
         else {
-            console.log('answer screen')
-            console.log(capturedStream)
             call.answer(capturedStream)
         }
     })

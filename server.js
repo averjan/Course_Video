@@ -113,6 +113,13 @@ app.get('/checkRoom/:id', function(req, res, next) {
 })
 
 io.on("connection" , socket => {
+    socket.on("synchronizeScreen", (room) => {
+        console.log('synchron ' + rooms[room].screen)
+        if (rooms[room].screen !== -1) {
+            socket.emit('screenCaptured', rooms[room].screen)
+        }
+    })
+
     socket.on('newUser' , (user)=>{
         let id = user.id
         let room = user.room
@@ -135,12 +142,14 @@ io.on("connection" , socket => {
             //socket.to(room).emit('userDisconnect' , id);
             let currentRoom = rooms[room]
             rooms[room].users.splice(currentRoom.users.indexOf({ id: id, socket: socket }), 1)
-            if (currentRoom.users.length === 0) {
+            if (rooms[room].users.length === 0) {
                 //rooms.splice(rooms.indexOf(currentRoom), 1)
                 rooms[room] = undefined
             }
+            else if (rooms[room].screen === id) {
+                socket.broadcast.to(room).emit('capturingStopped')
+            }
 
-            socket.broadcast.to(room).emit('capturingStopped')
             socket.broadcast.to(room).emit('userDisconnect' , id);
         })
     })
@@ -150,13 +159,6 @@ io.on("connection" , socket => {
         rooms[room].screen = id
         console.log(id)
         socket.broadcast.to(room).emit('screenCaptured' , id);
-    })
-
-    socket.on("synchronizeScreen", (room) => {
-        if (rooms[room].screen !== -1) {
-            socket.emit('screenCaptured', rooms[room].screen)
-        }
-
     })
 
     socket.on("stopCapturing", (room, id) => {
