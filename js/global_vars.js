@@ -6,7 +6,7 @@ let fileReader;
 let tempFile;
 let tempFileName;
 let roomID = 'room';
-const mainUrl = "http://192.168.100.6:4000"
+const mainUrl = "http://localhost:4000"
 
 // temp initialized user
 let activeUser // = new UserApp('name', 'email', '', roomID, ROLE.admin)

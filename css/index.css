@@ -305,6 +305,7 @@ button {
     /* margin-left: 200px; */
     bottom: 0;
     border-radius: 30px;
+    border: solid 1px lightgrey;
 }
 
 .control-video {
@@ -315,4 +316,8 @@ button {
     bottom: 20px;
     display: flex;
     justify-content: center;
+}
+
+.control-video img {
+    cursor: pointer;
 }

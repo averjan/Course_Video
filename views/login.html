@@ -49,10 +49,39 @@
         const $ = require('jquery')
         let mailInput = document.getElementById('user-email')
         let nameInput = document.getElementById('user-name')
+        let roomInput = document.getElementById('room-blank')
+
+        function invokeValidityMessage(element, msg) {
+            element.setCustomValidity(msg);
+            element.reportValidity()
+        }
+
+        function inputFieldsAreValid() {
+            if (mailInput.validity.typeMismatch) {
+                invokeValidityMessage(mailInput, "Invalid email")
+                return false;
+            }
+            else if (mailInput.validity.valueMissing) {
+                invokeValidityMessage(mailInput, "Enter email")
+                return false;
+            }
+
+            if (nameInput.validity.valueMissing) {
+                invokeValidityMessage(nameInput, "Enter name");
+                return false
+            }
+
+            if (roomInput.validity.valueMissing) {
+                invokeValidityMessage(roomInput, "Enter room");
+                return false
+            }
+
+            return true
+        }
 
         // Join event
         document.getElementById("join").addEventListener("click", (event) => {
-            if (!mailInput.validity.valid || !nameInput.validity.valid) {
+            if (!inputFieldsAreValid()) {
                 return;
             }
 
@@ -69,14 +98,15 @@
                     let userMail = document.getElementById("user-email").value
                     ipcRenderer.send("changeRoom", roomID, userName, userMail, ROLE.guest)
                 }
+                else {
+                    invokeValidityMessage(event.target, "Room not exists")
+                }
             }
         })
 
         // Create event
         document.getElementById("create").addEventListener("click", (event) => {
-            if (!mailInput.validity.valid || !nameInput.validity.valid) {
-                console.log(mailInput.validity.valid)
-                console.log(nameInput.validity.valid)
+            if (!inputFieldsAreValid()) {
                 return;
             }
 
@@ -92,6 +122,10 @@
                     let userName = document.getElementById("user-name").value
                     let userMail = document.getElementById("user-email").value
                     ipcRenderer.send("changeRoom", roomID,  userName, userMail, ROLE.admin)
+                }
+                else {
+
+                    invokeValidityMessage(event.target, "Room already exists")
                 }
             }
         })

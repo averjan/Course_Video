@@ -214,9 +214,16 @@ function addVideo(video , stream, user){
     gridElement.querySelector('.user-vid').replaceChild(video, gridElement.querySelector('video'))
     //gridElement.children[0].appendChild(video)
     gridElement.children[0].id = user.id
+    if ((activeUser.admin) && (user.id === activeUser.id)) {
+        let controlPnl = gridElement.querySelector('.user-vid').querySelector('.control-video')
+        controlPnl.style.display = 'none'
+        controlPnl.style.enabled = 'false'
+    }
+
     gridElement.querySelector('.vid-username').innerHTML = user.name
     videoGrid.appendChild(gridElement.children[0])
     //videoGrid.append(video);
+
 }
 
 
