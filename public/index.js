@@ -309,6 +309,7 @@ function shutDownSelfVideo() {
         }
 
         document.getElementById("video-stream-control").className = 'btn btn-danger'
+        document.querySelector('#video-stream-control img').src = '../img/icons/video_off_white.svg'
         document.getElementById(activeUser.id).children[3].style.display = 'none'
         document.getElementById(activeUser.id).children[1].style.display = 'block'
 
@@ -332,6 +333,7 @@ function shutDownSelfVideo() {
         document.getElementById("video-stream-control").className = 'btn btn-success'
         document.getElementById(activeUser.id).children[1].style.display = 'none'
         document.getElementById(activeUser.id).children[3].style.display = 'block'
+        document.querySelector('#video-stream-control img').src = '../img/icons/video_on_white.svg'
     }
 }
 
@@ -340,11 +342,13 @@ function shutDownSelfAudio() {
         audioTracks[0].enabled = false
         socket.emit("DisableAudio", activeUser)
         document.getElementById("audio-stream-control").className = 'btn btn-danger'
+        document.querySelector('#audio-stream-control img').src = '../img/icons/micro_off_white.svg'
     }
     else {
         audioTracks[0].enabled = true
         socket.emit("EnableAudio", activeUser)
         document.getElementById("audio-stream-control").className = 'btn btn-success'
+        document.querySelector('#audio-stream-control img').src = '../img/icons/micro_on_white.svg'
     }
 }
 

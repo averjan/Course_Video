@@ -1,0 +1,16 @@
+#control-panel button {
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    display: flex;
+}
+
+#control-panel button img {
+    height: 20px;
+    padding-right: 5px;
+}
+
+.control-btn img {
+    height: 20px;
+    padding-right: 5px;
+}
