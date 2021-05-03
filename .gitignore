@@ -6,6 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# build folder
+build/
+Yes-win32-x64/
+
 # Extra images for furthor work
 
 # Download folder

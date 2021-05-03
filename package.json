@@ -11,10 +11,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^12.0.1"
+    "electron": "^12.0.6",
+    "electron-packager": "^15.2.0"
   },
   "dependencies": {
     "ejs": "^3.1.6",
+    "electron-squirrel-startup": "^1.0.0",
     "express": "^4.17.1",
     "jquery": "^3.6.0",
     "md5": "^2.3.0",
@@ -24,5 +26,32 @@
     "peer": "^0.6.1",
     "socket.io": "^4.0.0",
     "uuid": "^8.3.2"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "testelectron"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }

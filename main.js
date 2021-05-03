@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const { ipcMain } = require('electron')
 const path = require('path')
-
+// electron-packager . Yes --platform=win32 --arch=x64
 let defaultWindow;
 let userData;
 
@@ -17,6 +17,7 @@ function createWindow () {
         }
     })
 
+    win.removeMenu()
     win.loadFile('views/login.html')
     defaultWindow = win
     //win.loadFile('views/index.html')
