@@ -17,11 +17,9 @@ function createWindow () {
         }
     })
 
-    win.removeMenu()
+    //win.removeMenu()
     win.loadFile('views/login.html')
     defaultWindow = win
-    //win.loadFile('views/index.html')
-    //win.loadURL('http://localhost:4000/room')
 
     win.webContents.session.on('will-download', (event, item, webContents) => {
         // Установите путь сохранения, чтобы Electron не отображал диалоговое окно сохранения.
@@ -66,6 +64,7 @@ app.on('window-all-closed', () => {
     }
 })
 
+// Load Room window
 ipcMain.on("changeRoom", (event, roomID, userName, userMail, role) => {
     userData = {
         roomId: roomID,
@@ -77,6 +76,7 @@ ipcMain.on("changeRoom", (event, roomID, userName, userMail, role) => {
     defaultWindow.loadFile('views/index.html')
 })
 
+// Send user parameters from login window to room window
 ipcMain.on("sendRoomId", (event) => {
     console.log(userData)
     event.reply("getRoomId", userData)

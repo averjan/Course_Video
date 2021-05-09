@@ -51,11 +51,18 @@
         let nameInput = document.getElementById('user-name')
         let roomInput = document.getElementById('room-blank')
 
+        /**
+         * Выводит сообщение о невалидности данных.
+         * @function
+         * @param {HTMLFormElement} element - Элемент с невалидными данными.
+         * @param {string} msg - Сообщение.
+         */
         function invokeValidityMessage(element, msg) {
             element.setCustomValidity(msg);
             element.reportValidity()
         }
 
+        // Проверка введенных пользователем данных на валидность
         function inputFieldsAreValid() {
             if (mailInput.validity.typeMismatch) {
                 invokeValidityMessage(mailInput, "Invalid email")
@@ -79,7 +86,7 @@
             return true
         }
 
-        // Join event
+        // Пользователь присоединяется к конференции
         document.getElementById("join").addEventListener("click", (event) => {
             if (!inputFieldsAreValid()) {
                 return;
@@ -92,19 +99,21 @@
             Http.open("GET", url)
             Http.send()
 
-            Http.onload = function () {
+            // Если конференция с введенным пользователем существует
+            Http.onload = async function () {
                 if (Http.response.status) {
                     let userName = document.getElementById("user-name").value
                     let userMail = document.getElementById("user-email").value
-                    ipcRenderer.send("changeRoom", roomID, userName, userMail, ROLE.guest)
-                }
-                else {
+                    if (await sendMail(userMail, userName, Http.response.master) === true) {
+                        await ipcRenderer.send("changeRoom", roomID, userName, userMail, ROLE.guest);
+                    }
+                } else {
                     invokeValidityMessage(event.target, "Room not exists")
                 }
             }
         })
 
-        // Create event
+        // Пользователь создает конференцию
         document.getElementById("create").addEventListener("click", (event) => {
             if (!inputFieldsAreValid()) {
                 return;
@@ -118,6 +127,7 @@
             Http.send()
 
             Http.onload = function () {
+                // Если конференции с введенным пользователем не существует
                 if (!Http.response.status) {
                     let userName = document.getElementById("user-name").value
                     let userMail = document.getElementById("user-email").value
