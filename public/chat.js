@@ -1,12 +1,17 @@
-// const socket = io('http://localhost:4000');
 const md5 = require('../node_modules/md5/md5.js')
 const { Message } = require('../js/message')
 const { FileMessage } = require('../js/file_message')
 
+// DOM элемент, содержащий все сообщения в чате
 let messages = document.getElementById('messages')
+
+// DOM форма, подтверждающая отправку сообщения
 let form = document.getElementById("form")
+
+// DOM элемент с текстом сообщения
 let input = document.getElementById("input")
 
+// Событие нажатия кнопки отправки сообщения в чат
 form.addEventListener('submit', function (e) {
     e.preventDefault()
     if (input.value) {
@@ -15,6 +20,7 @@ form.addEventListener('submit', function (e) {
     }
 })
 
+// Установка обработчика на сокет событие получения сообщения в чат
 socket.on('chat message', function(msg, user) {
     let item = document.createElement('li')
     let chat = document.getElementById('chat-div')
@@ -27,9 +33,13 @@ socket.on('chat message', function(msg, user) {
 
     messages.appendChild(m.item)
     chat.scrollTop = chat.scrollHeight
-    //window.scrollTo(0, document.body.scrollHeight)
 })
 
+/**
+ * Добавляет сообщение с файлом в чат.
+ * @function
+ * @param {Object} file - Информация о файле.
+ */
 function appendFileToChat(file) {
     let filePath = file.file.path
     let fileContainerID = md5(filePath)
@@ -54,6 +64,12 @@ function appendFileToChat(file) {
     messages.appendChild(item.item)
 }
 
+/**
+ * Отправка запроса на получение файла с сервера.
+ * @function
+ * @param {HTMLElement} file - HTML элемент файла в чате.
+ * @param {string} id - id файла на сервере.
+ */
 function downloadFile(file, id) {
     callToDownload(file, id)
 }

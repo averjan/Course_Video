@@ -4,6 +4,10 @@ const { ipcRenderer } = require('electron')
 const labelFileName = document.querySelector('#file-upload-div div span')
 const cancelFileBtn = document.querySelector('#cancel-file-btn')
 
+/**
+ * Функция открытия чата.
+ * @function
+ */
 function openForm() {
     let panel = document.getElementById("chat-panel");
     panel.style.display = (panel.style.display === "flex") ? "none" : "flex"
@@ -40,6 +44,10 @@ document.getElementById("send-btn").addEventListener('click', (event) =>{
     }
 })
 
+/**
+ * Функция инициализации страницы.
+ * @function
+ */
 function loadBody() {
     ipcRenderer.send("sendRoomId")
 }
@@ -50,7 +58,6 @@ String.prototype.splice = function(idx, rem, str) {
 
 ipcRenderer.on("getRoomId", (event, userData) => {
     roomID = userData.roomId
-    console.log(userData)
     activeUser = new UserApp(userData.userName, userData.userMail, '', userData.roomId, userData.role)
     if (activeUser.admin) {
         let xmlString = "        <div class=\"control-video\">\n" +
@@ -62,6 +69,11 @@ ipcRenderer.on("getRoomId", (event, userData) => {
     }
 })
 
+/**
+ * Меняет состояние аудиопотока пользователя. Функция администратора.
+ * @function
+ * @param {HTMLElement} e - HTML элемент кнопки, которая отключает аудио пользователя.
+ */
 function changeAudioState(e) {
     let userID = e.parentElement.parentElement.id
     shutDownOtherAudio(userID)
@@ -75,6 +87,11 @@ function changeAudioState(e) {
     }
 }
 
+/**
+ * Меняет состояние видеопотока пользователя. Функция администратора.
+ * @function
+ * @param {HTMLElement} e - HTML элемент кнопки, которая отключает видео пользователя.
+ */
 function changeVideoState(e) {
     let userID = e.parentElement.parentElement.id
     shutDownOtherVideo(userID)
@@ -88,6 +105,11 @@ function changeVideoState(e) {
     }
 }
 
+/**
+ * Меняет иконку файла на скачанный в чате.
+ * @function
+ * @param {string} fileID - id HTML элемента файла в чате.
+ */
 function switchFileIcoToComplete(fileID) {
     let txt = document.getElementById(fileID)
     txt.parentElement.getElementsByClassName('open-ico')[0].style.display = 'block'

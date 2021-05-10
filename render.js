@@ -1,4 +1,3 @@
-//const { desktopCapturer, remote, Menu, dialog } = require('electron');
 const { desktopCapturer, remote } = require('electron');
 const { writeFile } = require('fs');
 
@@ -13,25 +12,6 @@ const recordedChunks = [];
 
 // Buttons
 const videoElement = document.createElement('video');
-
-/*
-const startBtn = document.getElementById('screen-stream');
-startBtn.onclick = e => {
-    mediaRecorder.start();
-    startBtn.classList.add('is-danger');
-    startBtn.innerText = 'Recording';
-};
-
-
-const stopBtn = document.getElementById('screen-stop');
-
-stopBtn.onclick = e => {
-    mediaRecorder.stop();
-    startBtn.classList.remove('is-danger');
-    startBtn.innerText = 'Start';
-};
-*/
-
 const mainVidPad = document.getElementById('vid-pad')
 const mainVideoScreen = document.getElementById('vid-main')
 
@@ -42,7 +22,10 @@ const videoCancelShareBtn = document.getElementById('screen-cancel-select');
 videoCancelShareBtn.hidden = true;
 videoCancelShareBtn.onclick = cancelVideoSources
 
-// Get the available video sources
+/**
+ * Получение доступных источников медиа.
+ * @function
+ */
 async function getVideoSources() {
     const inputSources = await desktopCapturer.getSources({
         types: ['window', 'screen']
@@ -60,10 +43,13 @@ async function getVideoSources() {
     videoOptionsMenu.popup();
 }
 
-// Change the videoSource window to record
+/**
+ * Получает видеоизображение выбранного окна.
+ * @function
+ * @param {Electron.DesktopCapturerSource} source - Источник видеопотока(демострируемое окно).
+ */
 async function selectSource(source) {
 
-    // videoSelectBtn.innerText = source.name;
 
     const constraints = {
         audio: false,
@@ -75,53 +61,28 @@ async function selectSource(source) {
         }
     };
 
-    // Create a Stream
+    // Создает объект медиапотока
     const stream = await navigator.mediaDevices
         .getUserMedia(constraints);
 
-    //myVideoStream.addTrack(stream.getTracks()[0])
     capturedStream = stream
     mainVidPad.style.height = '100%'
     document.getElementById('vid-main-block').style.flexGrow = '1'
     document.getElementById('vid-panel').style.flexGrow = '0'
     document.getElementById('control-panel').className = 'disabled-control-panel'
-    //let ms = new MediaStream([myVideoStream.getTracks()[2]])
-    /*
-    let mainVideo = document.getElementById("vid-main")
-    mainVideo.srcObject = stream;
-    mainVideo.addEventListener('loadedmetadata', () => {
-        mainVideo.play()
-    })
-    */
+
     setMainVid(capturedStream)
-    //addVideo(mainVideo, capturedStream)
 
     capturingScreen = true
-    /*
-    peerCapture.on("call", call=> {
-        call.answer(stream)
-    })
-    */
-
     socket.emit("screenCaptured", myId, roomID)
     videoSelectBtn.hidden = true
     videoCancelShareBtn.hidden = false
-    // Preview the source in a video element
-    //videoElement.srcObject = stream;
-    //await videoElement.play();
-
-    // Create the Media Recorder
-    /*
-    const options = { mimeType: 'video/webm; codecs=vp9' };
-    mediaRecorder = new MediaRecorder(stream, options);
-
-    // Register Event Handlers
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.onstop = handleStop;
-    */
-    // Updates the UI
 }
 
+/**
+ * Отключает демонстрацию экрана.
+ * @function
+ */
 function cancelVideoSources()
 {
     capturingScreen = false
@@ -133,7 +94,6 @@ function cancelVideoSources()
     document.getElementById('vid-main-block').style.flexGrow = '0'
     document.getElementById('vid-panel').style.flexGrow = '1'
     document.getElementById('control-panel').className = 'active-control-panel'
-    // document.getElementById("screen-share").remove()
 }
 
 // Captures all recorded chunks

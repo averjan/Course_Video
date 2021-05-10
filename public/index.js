@@ -1,11 +1,8 @@
-//const socket = io('http://localhost:4000');
-// const desktopCapturer = require('electron')
 const socket = io(mainUrl);
 
 const peer = new Peer();
 const $ = require('jquery')
 
-// let roomID = "room"
 let myVideoStream = null;
 let myId;
 let otherStreams = [];
@@ -27,11 +24,15 @@ let audioTracks = [];
 let filePathMap = []
 
 ioClient = socket.connect(mainUrl)
-// ioClient = socket.connect('http://192.168.100.5:4000')
 ioClient.on('connect', socket => {
     ioClient.send('room')
 })
 
+/**
+ * Настройка медиапотоков пользователя на отправку другим пользователям и отображения на экране пользователя.
+ * @function
+ * @param {MediaStream} stream - Медиапотоки пользователя.
+ */
 function workWithStream(stream) {
     myVideoStream = stream;
     videoTracks = stream.getVideoTracks();
@@ -39,9 +40,6 @@ function workWithStream(stream) {
     activeUser.id = peer.id
     addVideo(myvideo , stream, activeUser);
     peer.on('call' , call =>{
-        //  || (peerConnections.indexOf(call) > -1)
-        // alert(capturingScreen)
-        // alert(call.metadata.id)
         if ((!capturingScreen)) {
             if (otherStreams.indexOf(call.metadata.user.id) < 0) {
                 call.answer(myVideoStream);
@@ -85,6 +83,10 @@ async function getMedia(constraints) {
     return stream
 }
 
+/**
+ * Получение видео и аудио пользователя.
+ * @function
+ */
 function getMediaLaunch() {
     navigator.mediaDevices.getUserMedia({
         video: true,
@@ -92,7 +94,7 @@ function getMediaLaunch() {
     }).then((stream) => {
         workWithStream(stream)
     }).catch(err => {
-        console.log(err)
+        // Если нет доступа к видео, то получение только аудио.
         navigator.mediaDevices.getUserMedia({
             video: false,
             audio: true
@@ -107,6 +109,10 @@ function getMediaLaunch() {
 
 getMediaLaunch()
 
+/**
+ * Отправка сообщения о новом пользователе серверу.
+ * @function
+ */
 const emitNewUser = () => {
     let id = peer.id
     myId = id;
@@ -126,6 +132,11 @@ peer.on('error' , (err)=>{
     alert(err.type);
 });
 
+/**
+ * Звонок присоединившемуся пользователю для получения его медиапотоков.
+ * @function
+ * @param {UserApp} user - Объект присоединившегося пользователя.
+ */
 function callUser(user) {
     const call  = peer.call(user.id , myVideoStream, {metadata: {user: activeUser }});
     const vid = document.createElement('video');
@@ -140,7 +151,6 @@ function callUser(user) {
         }
     })
     call.on('close' , ()=>{
-        //vid.remove();
         document.getElementById(user.id).remove()
     })
 
@@ -148,8 +158,6 @@ function callUser(user) {
 }
 
 socket.on('userJoined' , user => {
-    //alert("new")
-    console.log("new")
     callUser(user)
 })
 
@@ -180,7 +188,6 @@ socket.on('screenCaptured' , id=>{
     call.on('close' , ()=>{
         socket.emit('capturingStopped')
     })
-    // peerConnections[id] = call;
 })
 
 socket.on('capturingStopped', () => {
@@ -198,6 +205,13 @@ function setVideo(stream, user) {
     video.srcObject = stream;
 }
 
+/**
+ * Добавляет видео и аудио другого пользователя на страницу данного клиента.
+ * @function
+ * @param {HTMLElement} video - Почта клиента.
+ * @param {MediaStream} stream - Имя клиента в конференции.
+ * @param {UserApp} user - имя создателя конференции.
+ */
 function addVideo(video , stream, user){
     if (document.getElementById(user.id)) {
         setVideo(stream, user.id)
@@ -205,14 +219,12 @@ function addVideo(video , stream, user){
     }
 
     let gridElement = document.querySelector('#user-video-template').content.cloneNode(true)
-    //video = gridElement.querySelector('video')
     video.srcObject = stream;
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
 
     gridElement.querySelector('.user-vid').replaceChild(video, gridElement.querySelector('video'))
-    //gridElement.children[0].appendChild(video)
     gridElement.children[0].id = user.id
     if ((activeUser.admin) && (user.id === activeUser.id)) {
         let controlPnl = gridElement.querySelector('.user-vid').querySelector('.control-video')
@@ -222,11 +234,13 @@ function addVideo(video , stream, user){
 
     gridElement.querySelector('.vid-username').innerHTML = user.name
     videoGrid.appendChild(gridElement.children[0])
-    //videoGrid.append(video);
-
 }
 
-
+/**
+ * Добавление медиапотока для окна демонстрации экрана.
+ * @function
+ * @param {MediaStream} stream - Медиа поток экрана.
+ */
 function setMainVid(stream){
     let mainVideo = document.getElementById("vid-main")
     mainVideo.srcObject = stream;
@@ -289,16 +303,32 @@ async function startCapture() {
     })
 }
 
-// Stream control
+// Функции контроля медиапотоков пользователей в конференции
+
+/**
+ * Функция администратора; отключает микрофон пользователя.
+ * @function
+ * @param {string} userID - Почта клиента.
+ */
 function shutDownOtherAudio(userID) {
     socket.emit("shutDownUserAudio", userID, activeUser.room)
 }
 
+/**
+ * Функция администратора; отключает видео пользователя.
+ * @function
+ * @param {string} userID - Почта клиента.
+ */
 function shutDownOtherVideo(userID) {
     socket.emit("shutDownUserVideo", userID, activeUser.room)
 }
 
 let tempTrack
+
+/**
+ * Отключение собственного видео.
+ * @function
+ */
 function shutDownSelfVideo() {
     if (videoTracks.length === 0 || videoTracks[0].enabled) {
     //myvideo = document.querySelector('#self video')
@@ -337,6 +367,10 @@ function shutDownSelfVideo() {
     }
 }
 
+/**
+ * Отключение собственного микрофона.
+ * @function
+ */
 function shutDownSelfAudio() {
     if (audioTracks[0].enabled) {
         audioTracks[0].enabled = false
@@ -381,7 +415,12 @@ socket.on('userEnableVideo', function(id) {
 })
 
 
-////////// UPLOADING
+////////// Загрузка файлов на сервер
+/**
+ * Отправка блока данных на сервер.
+ * @function
+ * @param {string} slice - Блок файла.
+ */
 const uploadFileSlice = (slice) => {
     socket.emit("client-send-file-slice", activeUser, slice)
 }
@@ -401,10 +440,19 @@ socket.on("CHAT_FILE", function (file) {
 let callToDownload
 
 $(function() {
+    /**
+     * Отправка запроса на получение файла с сервера.
+     * @function
+     * @param {HTMLElement} file - HTML элемент файла в чате.
+     * @param {string} id - id файла на сервере.
+     */
     callToDownload = function (file, id) {
         let fileName = file.textContent
+
+        // Получение пути к файлу на сервере
         let path = filePathMap[id]
-        alert(fileName)
+
+        // Запрос на получение файла
         $.ajax({
             type: 'GET',
             url: mainUrl + path,
@@ -415,7 +463,6 @@ $(function() {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
                 link.download = fileName;
-                // console.log(data);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);

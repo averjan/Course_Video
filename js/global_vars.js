@@ -8,7 +8,7 @@ let tempFileName;
 let roomID = 'room';
 const mainUrl = "http://localhost:4000"
 
-// temp initialized user
+// Объект данного пользователя
 let activeUser // = new UserApp('name', 'email', '', roomID, ROLE.admin)
 // main.js: sendRoomId event - decomment
 const MICRO = {
