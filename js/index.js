@@ -24,14 +24,6 @@ document.getElementById("select-file-input").addEventListener('change', (event) 
     let fileName = event.target.value.split( '\\' ).pop();
     labelFileName.innerHTML = fileName
     cancelFileBtn.style.display = 'block'
-    /*
-    if (file) {
-        document.getElementById("select-file-input").value = '';
-        shareFile(file)
-        file = null
-    }
-
-     */
 })
 
 document.getElementById("send-btn").addEventListener('click', (event) =>{

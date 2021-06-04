@@ -68,21 +68,6 @@ function workWithStream(stream) {
     socket.emit('synchronizeScreen', activeUser.room)
 }
 
-async function getMedia(constraints) {
-    let stream = null;
-
-    stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-    }).then((stream) => {
-        return stream
-    }).catch(err => {
-        return null
-    })
-
-    return stream
-}
-
 /**
  * Получение видео и аудио пользователя.
  * @function
@@ -157,22 +142,24 @@ function callUser(user) {
     peerConnections[user.id] = call;
 }
 
+// Обработка события присоединения пользователя
 socket.on('userJoined' , user => {
     callUser(user)
 })
 
+// Обработка события отключения пользователя
 socket.on('userDisconnect' , id=>{
     if(peerConnections[id]){
         peerConnections[id].close();
     }
 })
 
+// Обработка события начала демонстрации экрана другим пользователем
 socket.on('screenCaptured' , id=>{
     console.log(myVideoStream)
     const call  = peer.call(id , myVideoStream);
     const vid = document.createElement('video');
     console.log(call)
-    //callScreen = call
     call.on('error' , (err)=>{
         alert(err);
     })
@@ -190,6 +177,7 @@ socket.on('screenCaptured' , id=>{
     })
 })
 
+// Обработка события окончания демонстрации экрана другим пользователем
 socket.on('capturingStopped', () => {
     document.getElementById('vid-pad').style.height = '0'
     document.getElementById('vid-main-block').style.flexGrow = '0'
@@ -248,60 +236,6 @@ function setMainVid(stream){
         mainVideo.play()
     })
 }
-// Capture screen
-/*
-document.getElementById("screen-stream").onclick = function(event){
-    if (captureScreen == null) {
-        captureScreen = startCapture()
-    }
-    else {
-        captureScreen = null
-    }
-}
-*/
-/*
-async function startCapture() {
-    const displayMediaOptions = {video: false, audio: false}
-    try {
-        captureScreen = await navigator.mediaDevices.getDisplayMedia({video:true});
-        screen_video.srcObject = captureScreen;
-        peer.on('call' , call=>{
-            call.answer(captureScreen);
-        })
-    } catch(err) {
-        console.error("Error: " + err);
-    }
-    return captureScreen;
-}
-*/
-
-async function startCapture() {
-    desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-        for (const source of sources) {
-            if (source.name === 'Electron') {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        audio: false,
-                        video: {
-                            mandatory: {
-                                chromeMediaSource: 'desktop',
-                                chromeMediaSourceId: source.id,
-                                minWidth: 1280,
-                                maxWidth: 1280,
-                                minHeight: 720,
-                                maxHeight: 720
-                            }
-                        }
-                    })
-                    addVideo(screen_video, stream, 'r')
-                } catch (e) {
-                    console.log(e)
-                }
-                return
-            }
-        }
-    })
-}
 
 // Функции контроля медиапотоков пользователей в конференции
 
@@ -331,8 +265,6 @@ let tempTrack
  */
 function shutDownSelfVideo() {
     if (videoTracks.length === 0 || videoTracks[0].enabled) {
-    //myvideo = document.querySelector('#self video')
-    //if (videoTracks[0].readyState === 'live') {
         console.log(videoTracks)
         if (videoTracks.length > 0) {
             videoTracks[0].enabled = false
@@ -348,17 +280,6 @@ function shutDownSelfVideo() {
     }
     else {
         videoTracks[0].enabled = true
-        /*
-        let stream = await getMedia({ video: true, audio: true })
-        if (stream != null) {
-            myVideoStream = stream
-            videoTracks = myVideoStream.getVideoTracks()
-            audioTracks = myVideoStream.getAudioTracks()
-            console.log(myvideo)
-            myvideo.srcObject = myVideoStream
-        }
-        */
-
         socket.emit("EnableVideo", activeUser)
         document.getElementById("video-stream-control").className = 'btn btn-success'
         document.getElementById(activeUser.id).children[1].style.display = 'none'
@@ -386,28 +307,33 @@ function shutDownSelfAudio() {
     }
 }
 
+// Обработка события сокета отключения админом микрофона данного пользователя
 socket.on('shutMeDownAudio', () => {
     shutDownSelfAudio()
 })
 
+// Обработка события сокета отключения админом видео данного пользователя
 socket.on('shutMeDownVideo', () => {
     shutDownSelfVideo()
 })
 
+// Обработка события сокета отключения другим пользователем микрофона
 socket.on('userDisableAudio', function(id) {
     document.getElementById(id).children[0].style.display = 'block'
 })
 
+// Обработка события сокета влкючения другим пользователем микрофона
 socket.on('userEnableAudio', function(id) {
     document.getElementById(id).children[0].style.display = 'none'
 })
 
+// Обработка события сокета отключения другим пользователем видео
 socket.on('userDisableVideo', function(id) {
-    console.log(id)
     document.getElementById(id).children[1].style.display = 'block'
     document.getElementById(id).children[3].style.display = 'none'
 })
 
+// Обработка события сокета включения другим пользователем видео
 socket.on('userEnableVideo', function(id) {
     callUser(id)
     document.getElementById(id).children[3].style.display = 'block'

@@ -6,7 +6,7 @@ let fileReader;
 let tempFile;
 let tempFileName;
 let roomID = 'room';
-const mainUrl = "http://localhost:4000"
+const mainUrl = "http://192.168.43.170:4000"
 
 // Объект данного пользователя
 let activeUser // = new UserApp('name', 'email', '', roomID, ROLE.admin)
